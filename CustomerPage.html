@@ -1,126 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Request Service</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background-color: #333;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
-
-    h1 {
-      margin: 0;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    textarea {
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    select {
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      background-color: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #555;
-    }
-
-    /* Dropdown Button */
-    .dropbtn {
-      background-color: #808080;
-      color: white;
-      padding: 16px;
-      font-size: 24px;
-      border: none;
-    }
-
-    /* The container <div> - needed to position the dropdown content */
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    /* Dropdown Content (Hidden by Default) */
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #333;
-      ;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-      z-index: 1;
-    }
-    .dropdown-content a {
-      color: black;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-    }
-    .dropdown-content a:hover {
-      background-color: #ddd;
-    }
-
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .dropdown:hover .dropbtn {
-      background-color: #3e8e41;
-    }
-      body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
         body, html {
           height: 100%;
           color: #333;
           line-height: 1.8;
         }
 
-        /* Create a Parallax Effect */
         .bgimg-1, .bgimg-2, .bgimg-3 {
           background-attachment: fixed;
           background-position: center;
@@ -128,19 +21,16 @@
           background-size: cover;
         }
 
-        /* First image (Logo. Full height) */
         .bgimg-1 {
           background-image: url('/w3images/parallax1.jpg');
           min-height: 100%;
         }
 
-        /* Second image (Services) */
         .bgimg-2 {
           background-image: url("/w3images/parallax2.jpg");
           min-height: 400px;
         }
 
-        /* Third image (Contact) */
         .bgimg-3 {
           background-image: url("/w3images/parallax3.jpg");
           min-height: 400px;
@@ -149,37 +39,143 @@
         .w3-wide {letter-spacing: 10px;}
         .w3-hover-opacity {cursor: pointer;}
 
-        /* Turn off parallax scrolling for tablets and phones */
         @media only screen and (max-device-width: 1600px) {
           .bgimg-1, .bgimg-2, .bgimg-3 {
             background-attachment: scroll;
             min-height: 400px;
           }
         }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: auto;
+        }
+
+        .dropbtn {
+            background-color: #333;
+            color: #fff;
+            padding: 16px;
+            font-size: 24px;
+            border: none;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            left: 0; /* Start from the left */
+            top: 100%;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: gray;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left; /* Align the menu items to the left */
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        .w3-content {
+            padding: 64px;
+        }
+
+        .w3-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .w3-col {
+            margin-bottom: 16px;
+            text-align: center;
+            width: 25%;
+        }
+
+        .w3-col h4 {
+            margin: 10px 0;
+        }
+
+        .w3-col p {
+            margin: 0;
+        }
     </style>
-  </style>
 </head>
 <body>
-  <header>
-    <h1> Welcome User</h1>
+    <header>
+        <h1>Welcome User</h1>
+        <div class="dropdown">
+            <button class="dropbtn">...</button>
+            <div class="dropdown-content">
+                <a href="requestservice.html">Request Services</a>
+                <a href="#">Messages</a>
+                <a href="#">View Contractors</a>
+                <a href="#">Current History</a>
+                <a href="#">Account Settings</a>
+                <a href="#">Log Out</a>
+            </div>
+        </div>
+    </header>
 
-    <div class="dropdown" style="float:center;">
-      <button class="dropbtn">...</button>
-      <div class="dropdown-content">
-        <a href="requestservice.html" style="float:center;">Request Services</a>
-        <a href="#" style="float:center">Messages</a>
-        <a href="#" style="float:center">View Contractors</a>
-        <a href="#" style="float:center">Current History</a>
-        <a href="#" style="float:center">Account Settings</a>
-        <a href="#" style="float:center">Log Out</a>
-      </div>
+    <div class="w3-content w3-container w3-padding-64" id="services">
+        <h3 class="w3-center">OUR SERVICES</h3>
+        <div class="w3-row">
+            <div class="w3-col m4 w3-center w3-padding-large">
+                <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
+                <h4>TV Mounting</h4>
+                <p>We professionally mount your TV on the wall.</p>
+            </div>
+            <div class="w3-col m4 w3-center w3-padding-large">
+                <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
+                <h4>Plumbing</h4>
+                <p>We fix plumbing issues efficiently.</p>
+            </div>
+            <div class="w3-col m4 w3-center w3-padding-large">
+                <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
+                <h4>Electrical Works</h4>
+                <p>Professional electrical services for your home.</p>
+            </div>
+            <div class="w3-col m4 w3-center w3-padding-large">
+                <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
+                <h4>Handyman</h4>
+                <p>General handyman services for various tasks.</p>
+            </div>
+        </div>
     </div>
-  </header>
-<!-- First Parallax Image with Logo Text -->
-<div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
-  <div class="w3-display-middle" style="white-space:nowrap;">
-    <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">HandyMan Services</span>
-  </div>
-</div>
-
 </body>
+</html>
