@@ -127,14 +127,16 @@ width: 100%;
 </head>
 <body>
 
-<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+<!--Was this needed? It was causing a duplicate login button at the top corner of the page. I changed this to look like the CustomerLogin, where the top corner specified the page was the login form.
+<!--<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>-->
+<h2>Login Form</h2>
 
 <div id="id01" class="modal">
-<form class="modal-content animate" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<!--I'm not sure what this code effects as of right now, but I'm leaving it here so I can change to the Contractor page - action="<?php echo $_SERVER['PHP_SELF']; ?>" -->
+<form class="modal-content animate" action="ContractorPage.html" method="post">
 <div class="imgcontainer">
 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
 </div>
-
     <div class="container">
         <label for="username"><b>Username</b></label>
         <input type="text" placeholder="Enter Username" name="username" required>
@@ -143,6 +145,8 @@ width: 100%;
         <input type="password" placeholder="Enter Password" name="password" required>
 
         <button type="submit">Login</button>
+		<!--Added functionality to allow new users to get to registration page-->
+		 <a href="ContractorRegister.php">New user? Create an account here</a><br><br>
          <a href="main.html">Back to Main Menu</a>
     </div>
 </form>

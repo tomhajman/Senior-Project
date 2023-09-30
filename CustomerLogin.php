@@ -70,7 +70,7 @@ span.psw {
 
 <h2>Login Form</h2>
 
-<form action="/action_page.php" method="post">
+<form action="CustomerPage.html" method="post">
 
   <div class="container">
     <label for="uname"><b>Username</b></label>
@@ -83,6 +83,10 @@ span.psw {
     <label>
       <input type="checkbox" checked="checked" name="remember"> Remember me
     </label>
+	<!--Added functionality to allow new users to get to registration page-->
+	<br><br><a href="CustomerRegistration.php">New user? Create an account here</a><br><br>
+	<a href="main.html">Back to Main Menu</a>
+
   </div>
 
   <div class="container" style="background-color:#f1f1f1">

@@ -144,7 +144,7 @@ width: 100%;
   <div class="clearfix">
     <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
     <button type="submit" class="signupbtn" name="submit">Sign Up</button>
-    <a href="login.php" <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Back to Login</button></a>
+    <a href="CustomerLogin.php" <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Back to Login</button></a>
 
   </div>
 </div>

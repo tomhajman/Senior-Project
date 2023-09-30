@@ -67,8 +67,9 @@
         }
 
         .dropdown {
-            position: absolute;
-            left: 0;
+            position: relative;
+            display: inline-block;
+            margin-left: auto;
         }
 
         .dropbtn {
@@ -85,10 +86,9 @@
             background-color: #333;
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            left: 0;
+            left: 0; /* Start from the left */
             top: 100%;
             z-index: 1;
-            text-align: left;
         }
 
         .dropdown-content a {
@@ -96,6 +96,7 @@
             padding: 12px 16px;
             text-decoration: none;
             display: block;
+            text-align: left; /* Align the menu items to the left */
         }
 
         .dropdown-content a:hover {
@@ -108,11 +109,6 @@
 
         .dropdown:hover .dropbtn {
             background-color: #3e8e41;
-        }
-
-        .welcome-user {
-            margin-right: 10px; 
-            margin-left: auto; 
         }
 
         .w3-content {
@@ -142,44 +138,15 @@
 </head>
 <body>
     <header>
+        <h1>Welcome Contractor</h1>
         <div class="dropdown">
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
-                <a href="requestservice.html">Request Services</a>
                 <a href="#">Messages</a>
-                <a href="#">View Contractors</a>
-                <a href="#">Current History</a>
+                <a href="#">View Available Jobs</a>
+                <a href="#">Job History</a>
                 <a href="#">Account Settings</a>
-                <a href="CustomerLogin.php">Log Out</a>
+                <a href="ContractorLogin.php">Log Out</a>
             </div>
         </div>
-		<div class="welcome-user">Welcome User</div> 
     </header>
-
-    <div class="w3-content w3-container w3-padding-64" id="services">
-        <h3 class="w3-center">OUR SERVICES</h3>
-        <div class="w3-row">
-            <div class="w3-col m4 w3-center w3-padding-large">
-                <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
-                <h4>TV Mounting</h4>
-                <p>We professionally mount your TV on the wall.</p>
-            </div>
-            <div class="w3-col m4 w3-center w3-padding-large">
-                <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-                <h4>Plumbing</h4>
-                <p>We fix plumbing issues efficiently.</p>
-            </div>
-            <div class="w3-col m4 w3-center w3-padding-large">
-                <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
-                <h4>Electrical Works</h4>
-                <p>Professional electrical services for your home.</p>
-            </div>
-            <div class="w3-col m4 w3-center w3-padding-large">
-                <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-                <h4>Handyman</h4>
-                <p>General handyman services for various tasks.</p>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
