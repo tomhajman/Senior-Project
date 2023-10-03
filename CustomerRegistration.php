@@ -119,7 +119,7 @@ width: 100%;
 
 <div id="id01" class="modal">
 <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
-<form class="modal-content" action="register.php" method="POST" onsubmit="return validateForm()">
+<form class="modal-content" action="CustomerLogin.php" method="POST" onsubmit="return validateForm()">
 <div class="container">
 <h1>Sign Up</h1>
 <p>Please fill in this form to create an account.</p>

@@ -129,7 +129,7 @@ width: 100%;
 
 <!--Was this needed? It was causing a duplicate login button at the top corner of the page. I changed this to look like the CustomerLogin, where the top corner specified the page was the login form.
 <!--<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>-->
-<h2>Login Form</h2>
+<h2>Contractor Login Form</h2>
 
 <div id="id01" class="modal">
 <!--I'm not sure what this code effects as of right now, but I'm leaving it here so I can change to the Contractor page - action="<?php echo $_SERVER['PHP_SELF']; ?>" -->
@@ -151,6 +151,7 @@ width: 100%;
     </div>
 </form>
 </div>
+
 
 <script>
 
