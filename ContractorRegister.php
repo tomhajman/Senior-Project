@@ -20,7 +20,7 @@
         label {
             font-weight: bold;
             display: inline-block;
-            width: 150px;
+            width: 250px;
         }
         input[type="text"],
         input[type="email"],
