@@ -1,0 +1,5 @@
+steps:
+  - name: Execute script
+    env:
+      PASSWORD: ${{ secrets.TEST_PASS }}
+    run: php script.php
