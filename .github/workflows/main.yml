@@ -1,5 +1,17 @@
-steps:
-  - name: Execute script
-    env:
-      PASSWORD: ${{ secrets.TEST_PASS }}
-    run: php script.php
+name: My PHP Workflow
+
+on: [push]
+
+jobs:
+  run-php-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    steps:
+    - name: Execute script
+      env:
+        PASSWORD: ${{ secrets.TEST_PASS }}
+      run: php script.php
