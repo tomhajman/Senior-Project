@@ -10,8 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    steps:
-    - name: Execute script
+    - name: Run PHP script
+      run: php script.php
       env:
         PASSWORD: ${{ secrets.TEST_PASS }}
-      run: php script.php
