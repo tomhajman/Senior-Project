@@ -65,15 +65,42 @@
         <h1>Company Registration Form</h1>
 
         <?php
+        include 'DBCredentials.php';
+        function connectToDatabase() {
+            global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
+        
+            $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+        
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+        
+            return $conn;
+        }
+        
+
         $errors = [];
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Handle form submission here
             $companyName = $_POST['companyName'];
-            $email = $_POST['email'];
+            $email = strtolower($_POST['email']);
             $password = $_POST['password'];
             $confirmPassword = $_POST['confirmPassword'];
-            $options = isset($_POST['options']) ? $_POST['options'] : [];
+            $options = isset($_POST['options']) ? serialize($_POST['options']) : [];
+
+            // Check if email already exists in the database
+            $conn = connectToDatabase();
+            $findDuplicate = $conn->prepare("SELECT COUNT(contractorEmail) FROM contractor WHERE contractorEmail=?");
+            $findDuplicate->bind_param("s", $email);
+            $findDuplicate->execute();
+            $findDuplicate->bind_result($numOfDuplicates);
+            $findDuplicate->fetch();
+            if($numOfDuplicates != 0){
+                $errors['email'] = "Email address already exists.";
+            }
+            $findDuplicate->close();
+            $conn->close();
 
             // Validate email
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -86,6 +113,22 @@
             }
 
             if (empty($errors)) {
+                $conn = connectToDatabase();
+
+                // Insert the data into table
+                $stmt = $conn->prepare("INSERT INTO contractor (contractorName, contractorEmail, contractorPassword, contractorExpertise) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $companyName, $email, $password, $options);
+        
+                if ($stmt->execute()) {
+                    echo "New record created successfully";
+                } else {
+                    echo "Error: " . $stmt->error;
+                }
+        
+                $stmt->close();
+                $conn->close();  
+                
+                /*
                 // For demonstration purposes, just print the submitted data
                 echo "<h2>Form Submitted:</h2>";
                 echo "Company Name: " . htmlspecialchars($companyName) . "<br>";
@@ -95,7 +138,7 @@
                 foreach ($options as $option) {
                     echo htmlspecialchars($option) . ", ";
                 }
-                echo "<br>";
+                echo "<br>";*/
             }
         }
         ?>
