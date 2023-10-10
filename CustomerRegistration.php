@@ -108,13 +108,80 @@ hr {
 </style>
 <body>
 
+<?php
+$HOST_NAME = "customer-contractor-db.ckozhgnn2unn.us-east-2.rds.amazonaws.com";
+$USERNAME = "seniorproject23";
+$PASSWORD = "2023seniorproject";
+$DB_NAME = "CustomerContractorDB";
 
+function connectToDatabase() {
+    global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
+
+    $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    return $conn;
+}
+
+$errors = [];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Handle form submission here
+    $firstName = $_POST['first_name'];
+    $lastName = $_POST['last_name'];
+    $streetAddress = $_POST['street_address'];
+    $floorApt = $_POST['floor_apt'];
+    $city = $_POST['city'];
+    $zip = $_POST['zip'];
+    $emailPhone = $_POST['email_phone'];
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
+
+    // Hash the password
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+    // Check if email or phone number already exists in the database
+    $conn = connectToDatabase();
+    $findDuplicate = $conn->prepare("SELECT COUNT(email_phone) FROM customers WHERE email_phone=?");
+    $findDuplicate->bind_param("s", $emailPhone);
+    $findDuplicate->execute();
+    $findDuplicate->bind_result($numOfDuplicates);
+    $findDuplicate->fetch();
+    if ($numOfDuplicates != 0) {
+        $errors['email_phone'] = "Email or phone number already exists.";
+    }
+    $findDuplicate->close();
+
+    // Validate password and confirm password
+    if ($password !== $confirmPassword) {
+        $errors['password'] = "Password and Confirm Password must match.";
+    }
+
+    if (empty($errors)) {
+        // Insert the data into the table
+        $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, street_address, floor_apt, city, zip, email_phone, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $firstName, $lastName, $streetAddress, $floorApt, $city, $zip, $emailPhone, $hashedPassword);
+
+        if ($stmt->execute()) {
+            echo "<div class='success'>New customer record created successfully</div>";
+        } else {
+            echo "<div class='error'>Error: " . $stmt->error . "</div>";
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
+}
+?>
 
 <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>
 
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-  <form class="modal-content" action="/action_page.php" onsubmit="return validateForm()">
+  <form class="modal-content" action="" method="post" onsubmit="return validateForm()">
     <div class="container">
       <h1>Sign Up</h1>
       <p>Please fill in this form to create an account.</p>
@@ -145,7 +212,7 @@ hr {
 
       <label for="confirm_password"><b>Confirm Password</b></label>
       <input type="password" placeholder="Confirm Password" name="confirm_password" required>
-      
+
       <label>
         <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
       </label>
@@ -157,7 +224,6 @@ hr {
         <button type="submit" class="signupbtn">Sign Up</button>
       </div>
       <div id="error-message" class="error"></div>
-      <div id="success-message" class="success"></div>
     </div>
   </form>
 </div>
@@ -188,7 +254,6 @@ function validateForm() {
     return false;
   } else {
     document.getElementById('error-message').innerHTML = "";
-    document.getElementById('success-message').innerHTML = "Thank you for signing up";
     return true;
   }
 }
