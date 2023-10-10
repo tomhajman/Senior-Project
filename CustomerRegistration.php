@@ -109,11 +109,6 @@ hr {
 <body>
 
 <?php
-$HOST_NAME = "customer-contractor-db.ckozhgnn2unn.us-east-2.rds.amazonaws.com";
-$USERNAME = "seniorproject23";
-$PASSWORD = "2023seniorproject";
-$DB_NAME = "CustomerContractorDB";
-
 function connectToDatabase() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
 
