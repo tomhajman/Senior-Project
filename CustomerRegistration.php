@@ -109,6 +109,7 @@ hr {
 <body>
 
 <?php
+include 'DBCredentials.php';
 function connectToDatabase() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
 
@@ -131,7 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $floorApt = $_POST['floor_apt'];
     $city = $_POST['city'];
     $zip = $_POST['zip'];
-    $emailPhone = $_POST['email_phone'];
+    $emailPhone = $_POST['customerEmail'];
     $password = $_POST['password'];
     $confirmPassword = $_POST['confirm_password'];
 
@@ -140,13 +141,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if email or phone number already exists in the database
     $conn = connectToDatabase();
-    $findDuplicate = $conn->prepare("SELECT COUNT(email_phone) FROM customers WHERE email_phone=?");
+    $findDuplicate = $conn->prepare("SELECT COUNT(customerEmail) FROM customers WHERE customerEmail=?");
     $findDuplicate->bind_param("s", $emailPhone);
     $findDuplicate->execute();
     $findDuplicate->bind_result($numOfDuplicates);
     $findDuplicate->fetch();
     if ($numOfDuplicates != 0) {
-        $errors['email_phone'] = "Email or phone number already exists.";
+        $errors['customerEmail'] = "Email or phone number already exists.";
     }
     $findDuplicate->close();
 
@@ -157,7 +158,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($errors)) {
         // Insert the data into the table
-        $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, street_address, floor_apt, city, zip, email_phone, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, street_address, floor_apt, city, zip, customerEmail, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssss", $firstName, $lastName, $streetAddress, $floorApt, $city, $zip, $emailPhone, $hashedPassword);
 
         if ($stmt->execute()) {
@@ -199,8 +200,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <label for="zip"><b>Zip</b></label>
       <input type="text" placeholder="Enter Zip" name="zip" required>
 
-      <label for="email_phone"><b>Email/Phone Number</b></label>
-      <input type="text" placeholder="Enter Email or Phone Number" name="email_phone" required>
+      <label for="customerEmail"><b>Email/Phone Number</b></label>
+      <input type="text" placeholder="Enter Email or Phone Number" name="customerEmail" required>
 
       <label for="password"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" name="password" required>
@@ -238,7 +239,7 @@ function validateForm() {
   var streetAddress = document.forms[0]["street_address"].value;
   var city = document.forms[0]["city"].value;
   var zip = document.forms[0]["zip"].value;
-  var emailPhone = document.forms[0]["email_phone"].value;
+  var emailPhone = document.forms[0]["customerEmail"].value;
   var password = document.forms[0]["password"].value;
   var confirmPassword = document.forms[0]["confirm_password"].value;
 
