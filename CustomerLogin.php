@@ -73,7 +73,7 @@ span.psw {
 <form action="CustomerPage.html" method="post">
 
   <div class="container">
-    <label for="uname"><b>Username</b></label>
+    <label for="uname"><b>Email</b></label>
     <input type="text" placeholder="Enter Username" name="uname" required>
 
     <label for="psw"><b>Password</b></label>
