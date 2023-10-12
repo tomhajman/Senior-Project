@@ -199,6 +199,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <label for="zip"><b>Zip</b></label>
       <input type="text" placeholder="Enter Zip" name="zip" required>
+      
+      <input type="text" placeholder="Phone Number" name="customerPhone#" required>
 
       <label for="customerEmail"><b>Email/Phone Number</b></label>
       <input type="text" placeholder="Enter Email or Phone Number" name="customerEmail" required>
