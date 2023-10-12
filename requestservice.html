@@ -74,27 +74,37 @@
 </head>
 <body>
     <header>
-        <h1>Request Service</h1>
+        <h1>Select Job Category</h1>
     </header>
     <div class="container">
         <form action="#" method="post" enctype="multipart/form-data">
             <label>Select Service:</label>
             <div>
-                <input type="radio" id="tv_mounting" name="service" value="tv_mounting">
-                <label for="tv_mounting">TV Mounting</label>
+                <input type="radio" id="generalContracting" name="service" value="generalContracting">
+                <label for="generalContracting">General Contracting</label>
             </div>
             <div>
                 <input type="radio" id="plumbing" name="service" value="plumbing">
                 <label for="plumbing">Plumbing</label>
             </div>
             <div>
-                <input type="radio" id="electrical_works" name="service" value="electrical_works">
-                <label for="electrical_works">Electrical Works</label>
+                <input type="radio" id="electrician" name="service" value="electrician">
+                <label for="electrician">Electrician</label>
             </div>
             <div>
-                <input type="radio" id="handyman_jobs" name="service" value="handyman_jobs">
-                <label for="handyman_jobs">Handyman Jobs</label>
+                <input type="radio" id="gardening" name="service" value="gardening">
+                <label for="gardening">Gardening</label>
             </div>        
+			<div>
+                <input type="radio" id="painting" name="service" value="painting">
+                <label for="painting">Painting</label>
+            </div>    
+			<div>
+                <input type="radio" id="hvac" name="service" value="hvac">
+                <label for="hvac">HVAC</label>
+            </div>
+			<label for="jobTitle">Job Title:</label>
+			<input type="text" id="jobTitle" name="jobTitle" required>
             <label for="details">Job Details:</label>
             <textarea id="details" name="details" rows="4" required></textarea>     
 			<label for="price">Your Asking Price $:</label>
