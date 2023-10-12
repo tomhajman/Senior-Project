@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <label for="customerFloorApt"><b>Floor/Apt</b></label>
       <input type="text" placeholder="Enter Floor/Apt" name="customerFloorApt">
 
-      <label for="customerCity"><b>city</b></label>
+      <label for="customerCity"><b>City</b></label>
       <input type="text" placeholder="Enter city" name="customerCity" required>
 
       <label for="customerZip"><b>Zip</b></label>
