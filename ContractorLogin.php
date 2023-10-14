@@ -61,6 +61,7 @@
 <div class="container">
 <h2>Contractor Login Form</h2>
 <?php
+session_start();
 include 'DBCredentials.php';
 //DB Connection
 function connectToDatabase() {
@@ -94,7 +95,8 @@ $stmt->fetch();
 	//echo "Correct info";
 //Compares to DB info, sends to contractor home page if correct, tells user info is incorrect if false.
 if ($inputPassword == $dbPassword) {
-	header('Location: ContractorPage.html');
+	$_SESSION['contractorEmail'] = $inputUsername;
+	header('Location: ContractorPage.php');
 	exit;
 }else
 	echo "<font color = 'red'> Email or Password is incorrect.</font>";
@@ -113,7 +115,7 @@ $conn->close();
 </form>
 
 <br><br><br><a href="ContractorRegister.php">New user? Create an account here</a><br><br>
-<a href="main.html">Back to Main Menu</a>
+<a href="main.php">Back to Main Menu</a>
 </div>
 </body>
 </html>

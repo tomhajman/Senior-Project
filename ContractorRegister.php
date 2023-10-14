@@ -65,6 +65,7 @@
         <h1>Company Registration Form</h1>
 
         <?php
+		session_start();
         include 'DBCredentials.php';
         function connectToDatabase() {
             global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;

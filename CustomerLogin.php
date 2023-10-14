@@ -67,17 +67,55 @@ span.psw {
 </style>
 </head>
 <body>
-
+<div class="container">
 <h2>Customer Login Form</h2>
+<?php
+session_start();
+include 'DBCredentials.php';
+//DB Connection
+function connectToDatabase() {
+    global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
+        
+    $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+        
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+        }
+        
+    return $conn;
+}
 
-<form action="CustomerPage.html" method="post">
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['username']) && isset($_POST['password'])) {
+$conn = connectToDatabase();
+$inputUsername = $_POST['username'];
+$inputPassword = $_POST['password'];
 
-  <div class="container">
-    <label for="uname"><b>Email</b></label>
-    <input type="text" placeholder="Enter Username" name="uname" required>
+$stmt = $conn->prepare("SELECT customerPassword FROM customer WHERE customerEmail = ?");
+ if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+$stmt->bind_param("s", $inputUsername);
+$stmt->execute();
+$stmt->bind_result($dbPassword);
+$stmt->fetch();
 
-    <label for="psw"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="psw" required>
+//Compares to DB info, sends to customer home page if correct, tells user info is incorrect if false.
+if (password_verify($inputPassword, $dbPassword)){
+	$_SESSION['customerEmail'] = $inputUsername;
+	header('Location: CustomerPage.php');
+	exit;
+}else
+	echo "<font color = 'red'> Email or Password is incorrect.</font>";
+$stmt->close();
+$conn->close();
+}
+?>
+<form action="" method="post">
+    <label for="username"><b>Email</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
         
     <button type="submit">Login</button>
     <label>
@@ -85,15 +123,13 @@ span.psw {
     </label>
 	<!--Added functionality to allow new users to get to registration page-->
 	<br><br><a href="CustomerRegistration.php">New user? Create an account here</a><br><br>
-	<a href="main.html">Back to Main Menu</a>
-
-  </div>
+	<a href="main.php">Back to Main Menu</a>
 
   <div class="container" style="background-color:#f1f1f1">
     <button type="button" class="cancelbtn">Cancel</button>
-    <span class="psw">Forgot <a href="#">password?</a></span>
+    <span class="password">Forgot <a href="#">password?</a></span>
   </div>
 </form>
-
+</div>
 </body>
 </html>
