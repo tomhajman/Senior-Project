@@ -109,6 +109,7 @@ hr {
 <body>
 
 <?php
+include 'DBCredentials.php';
 function connectToDatabase() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
 
@@ -141,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if email or phone number already exists in the database
     $conn = connectToDatabase();
-    $findDuplicate = $conn->prepare("SELECT COUNT(customerEmailAddress) FROM customers WHERE customerEmailAddress=?");
+    $findDuplicate = $conn->prepare("SELECT COUNT(customerEmail) FROM customer WHERE customerEmail=?");
     $findDuplicate->bind_param("s", $customerEmail);
     $findDuplicate->execute();
     $findDuplicate->bind_result($numOfDuplicates);
@@ -150,6 +151,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['customerEmailAddress'] = "Email or phone number already exists.";
     }
     $findDuplicate->close();
+	$conn->close();
 
     // Validate customerPassword and confirm customerPassword
     if ($customerPassword !== $confirmPassword) {
@@ -157,9 +159,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if (empty($errors)) {
+		$conn = connectToDatabase();
+		
         // Insert the data into the table
-        $stmt = $conn->prepare("INSERT INTO customers (customerFirstName, customerLastName, customerStreetAddress, customerFloorApt, customerCity, customerZip, customerEmailAddress, customerPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssssss", $customerFirstName, $customerlastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerEmail, $hashedPassword);
+        $stmt = $conn->prepare("INSERT INTO customer (customerFirstName, customerLastName, customerStreetAddress, customerFloorApt, customerCity, customerZip, customerEmail, customerPhoneNumber, customerPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssssss", $customerFirstName, $customerlastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerEmail, $customerPhoneNumber, $hashedPassword);
 
         if ($stmt->execute()) {
             echo "<div class='success'>New customer record created successfully</div>";
