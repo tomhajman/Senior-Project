@@ -178,6 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>
+<button onclick = "window.location.href = 'CustomerLogin.php';" style="width:auto;">Continue to login</button>
 
 <div id="id01" class="modal">
   <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
