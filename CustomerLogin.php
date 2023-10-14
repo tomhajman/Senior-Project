@@ -102,6 +102,7 @@ $stmt->fetch();
 //Compares to DB info, sends to customer home page if correct, tells user info is incorrect if false.
 if (password_verify($inputPassword, $dbPassword)){
 	$_SESSION['customerEmail'] = $inputUsername;
+if (password_verify($inputPassword, $dbPassword)){
 	header('Location: CustomerPage.php');
 	exit;
 }else
