@@ -12,9 +12,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 </style>
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
-	<?php
-		session_start();
-	?>
+
 <!-- Sidebar/menu -->
 <nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
   <div class="w3-container">
@@ -45,20 +43,174 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <div class="w3-container">
     <h1><b>Available Jobs</b></h1>
     <div class="w3-section w3-bottombar w3-padding-16">
+	<form class="modal-content" action="" method="post"
 	 <input type="text" placeholder="Search Jobs" id="searchJobs" class="w3-input">
       <span class="w3-margin-right">Filter:</span> 
-      <button class="w3-button w3-black">ALL</button>
-      <button class="w3-button w3-white"><i class="fa fa-wrench w3-margin-right"></i>Electrical</button>
-      <button class="w3-button w3-white"><i class="fa fa-wrench w3-margin-right"></i>Plumbing</button>
-      <button class="w3-button w3-white"><i class="fa fa-leaf w3-margin-right"></i>Gardening</button>
-      <button class="w3-button w3-white"><i class="fa fa-asterisk w3-margin-right"></i>HVAC</button>
-      <button class="w3-button w3-white"><i class="fa fa-paint-brush w3-margin-right"></i>Painting</button>
-      <button class="w3-button w3-white"><i class="fa fa-wrench w3-margin-right"></i>Mounting</button>
+	  <!--Buttons are assigned values which are used to filter the page to requested job type-->
+      <button class="w3-button w3-black" name="filterBtn" value="allJobsBtn">ALL</button>
+      <button class="w3-button w3-white" name="filterBtn" value="electricalJobsBtn"><i class="fa fa-wrench w3-margin-right"></i>Electrical</button>
+      <button class="w3-button w3-white" name="filterBtn" value="plumbingJobsBtn"><i class="fa fa-wrench w3-margin-right"></i>Plumbing</button>
+      <button class="w3-button w3-white" name="filterBtn" value="gardeningJobsBtn"><i class="fa fa-leaf w3-margin-right"></i>Gardening</button>
+      <button class="w3-button w3-white" name="filterBtn" value="hvacJobsBtn"><i class="fa fa-asterisk w3-margin-right"></i>HVAC</button>
+      <button class="w3-button w3-white" name="filterBtn" value="paintingJobsBtn"><i class="fa fa-paint-brush w3-margin-right"></i>Painting</button>
+      <button class="w3-button w3-white" name="filterBtn" value="mountingJobsBtn"><i class="fa fa-wrench w3-margin-right"></i>Mounting</button>
+	 </form>
     </div>
     </div>
   </header>
 
   <!-- Rest of the content... -->
+  	<?php
+		//Connecting DB, passing contractorEmail, can later change this to boot user to login page if they are not signed in. For now will just throw an error.
+		session_start();
+		include 'DBCredentials.php';
+		$userEmail = $_SESSION['contractorEmail'];
+		function connectToDB() {
+			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+				
+				if ($conn->connect_error) {
+					die("Connection issue: ".$databaseConnection->connect_error);
+				}			
+			return $conn;
+		}
+		//Leaving this here if you guys can find something more efficient.
+		/*$db = connectToDB();
+		$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob";
+		$result = $db->query($getJobInfo);*/
+		
+		//Functions that will be called which will be attatched to the filters in the form, will find and retrieve jobs based on category.
+		function allJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else
+			echo "NO RECORDS";
+		}
+		
+		function electricalJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Electrical'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else
+			echo "NO RECORDS";
+		}
+		
+		function plumbingJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Plumbing'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else
+			echo "NO RECORDS";
+		}
+		
+		function gardeningJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Gardening'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else
+			echo "NO RECORDS";
+		}
+		
+		function hvacJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='HVAC'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else 
+			echo "NO RECORDS";
+		}
+		
+		function paintingJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Painting'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else 
+			echo "NO RECORDS";
+		}
+		
+		function mountingJobs() {
+			$db = connectToDB();
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Mounting'";
+			$result = $db->query($getJobInfo);
+			if (mysqli_num_rows($result) > 0) {
+			echo "<ul>";
+			while ($record = mysqli_fetch_assoc($result)) {
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+			}
+			echo "</ul>";
+		} else
+			echo "NO RECORDS";
+		}
+		
+		//Checks if filterBtn is checked, displayed requested jobs based on type using above functions in switch statement
+		if (isset($_POST['filterBtn'])) {
+			$filter = $_POST['filterBtn'];
+			switch($filter){
+				case 'allJobsBtn':
+					allJobs();
+					break;
+				case 'electricalJobsBtn':
+					electricalJobs();
+					break;
+				case 'plumbingJobsBtn':
+					plumbingJobs();
+					break;
+				case 'gardeningJobsBtn':
+					gardeningJobs();
+					break;
+				case 'hvacJobsBtn':
+					hvacJobs();
+					break;
+				case 'paintingJobsBtn':
+					paintingJobs();
+					break;
+				case 'mountingJobsBtn':
+					mountingJobs();
+					break;
+				default:
+					allJobs();
+			}
+		} else {
+			allJobs();
+		}
+		
+	?>
 
 </div>
 
