@@ -133,6 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $customerFloorApt = $_POST['customerFloorApt'];
     $customerCity = $_POST['customerCity'];
     $customerZip = $_POST['customerZip'];
+	$customerCounty = $_POST['customerCounty'];
     $customerEmail = $_POST['customerEmailAddress'];
     $customerPassword = $_POST['customerPassword'];
     $customerPhoneNumber = $_POST['customerPhoneNumber'];
@@ -159,12 +160,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors['customerPassword'] = "Password and Confirm Password must match.";
     }
 
+	if (empty($customerCounty))
+		$errors['customerCounty'] = "customerCounty is empty";
+
     if (empty($errors)) {
 		$conn = connectToDatabase();
 		
         // Insert the data into the table
-        $stmt = $conn->prepare("INSERT INTO customer (customerFirstName, customerLastName, customerStreetAddress, customerFloorApt, customerCity, customerZip, customerEmail, customerPhoneNumber, customerPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssssssss", $customerFirstName, $customerlastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerEmail, $customerPhoneNumber, $hashedPassword);
+        $stmt = $conn->prepare("INSERT INTO customer (customerFirstName, customerLastName, customerStreetAddress, customerFloorApt, customerCity, customerZip, customerCounty, customerEmail, customerPhoneNumber, customerPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssssss", $customerFirstName, $customerlastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerCounty, $customerEmail, $customerPhoneNumber, $hashedPassword);
 
         if ($stmt->execute()) {
             echo "<div class='success'>New customer record created successfully</div>";
@@ -205,6 +209,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <label for="customerZip"><b>Zip</b></label>
       <input type="text" placeholder="Enter customerZip" name="customerZip" required>
+	  
+	  <label for="customerCounty"><b>County</b></label>
+	  <input type="radio" name="customerCounty" id="Suffolk" value="Suffolk" required>
+	  <label for="Suffolk">Suffolk</label>
+	  <input type="radio" name="customerCounty" id="Nassau" value="Nassau">
+	  <label for="Nassau">Nassau</label><br><br><br>
 	
 	 <label for="customerPhoneNumber"><b>Phone Number</b></label>
       <input type="text" placeholder="Enter Phone Number" name="customerPhoneNumber" required>
@@ -249,13 +259,14 @@ function validateForm() {
   var customerStreetAddress = document.forms[0]["customerStreetAddress"].value;
   var customerCity = document.forms[0]["customerCity"].value;
   var customerZip = document.forms[0]["customerZip"].value;
+  var customerCounty = document.forms[0]["customerCounty"].value;
   var customerEmail = document.forms[0]["customerEmailAddress"].value;
   var customerPassword = document.forms[0]["customerPassword"].value;
   var confirmPassword = document.forms[0]["confirm_password"].value;
 
   var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-  if (customerFirstName === "" || customerlastName === "" || customerStreetAddress === "" || customerCity === "" || customerZip === "" || customerEmail === "" || !customerPassword.match(passwordRegex) || confirmPassword === "") {
+  if (customerFirstName === "" || customerlastName === "" || customerStreetAddress === "" || customerCity === "" || customerZip === "" || customerCounty === "" || customerEmail === "" || !customerPassword.match(passwordRegex) || confirmPassword === "") {
     document.getElementById('error-message').innerHTML = "Please complete all fields and ensure the customerPassword is more than 8 digits, contains both uppercase and lowercase letters, numbers, and at least one special character.";
     return false;
   } else {

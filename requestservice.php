@@ -75,6 +75,105 @@
 <body>
 	<?php
 		session_start();
+		include 'DBCredentials.php';
+		$userEmail = $_SESSION['customerEmail'];
+		function connectToDB() {
+			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+				
+				if ($conn->connect_error) {
+					die("Connection issue: ".$databaseConnection->connect_error);
+				}			
+			return $conn;
+		}
+		$db = connectToDB();
+		
+		//Functions used to pull values from the database, I don't know if this is the most optimal way of doing it, but this is the way I found that works.
+		function getLName() {
+			global $userEmail, $db;
+			$getLNameQuery = "SELECT customerLastName FROM customer WHERE customerEmail = '$userEmail'";
+			$result = $db->query($getLNameQuery);
+			if ($result) {
+				$row = $result->fetch_assoc();
+				$userLName = $row['customerLastName'];
+			} else {
+				$userLName = "User";
+			}
+			return $userLName;
+		}
+		$userLName = getLName();
+		
+		function getCounty() {
+			global $userEmail, $db;
+			$getCountyQuery = "SELECT customerCounty FROM customer WHERE customerEmail = '$userEmail'";
+			$result = $db->query($getCountyQuery);
+			if ($result) {
+				$row = $result->fetch_assoc();
+				$userCounty = $row['customerCounty'];
+			} else {
+				$userCounty = "N/A";
+			}
+			return $userCounty;
+		}
+		
+		function getCity() {
+			global $userEmail, $db;
+			$getCityQuery = "SELECT customerCity FROM customer WHERE customerEmail = '$userEmail'";
+			$result = $db->query($getCityQuery);
+			if ($result) {
+				$row = $result->fetch_assoc();
+				$userCity = $row['customerCity'];
+			} else {
+				$userCity = "N/A";
+			}
+			return $userCity;
+		}
+		
+		function getAddress() {
+			global $userEmail, $db;
+			$getAddressQuery = "SELECT customerAddress FROM customer WHERE customerEmail = '$userEmail'";
+			$result = $db->query($getAddressQuery);
+			if ($result) {
+				$row = $result->fetch_assoc();
+				$userCity = $row['customerAddress'];
+			} else {
+				$userAddress = "N/A";
+			}
+			return $userAddress;
+		}
+		
+		//Assign variables to pulled values from DB for use in this form.
+		$userLName = getLName();
+		$userCounty = getCounty();	
+		$userCity = getCity();
+		$userAddress = getAddress();
+		
+		$errors = [];
+		if ($_SERVER["REQUEST_METHOD"] == "POST") {
+			//Handle form submission
+			$jobType = $_POST['jobType'];
+			$jobTitle = $_POST['jobTitle'];
+			$jobDescription = $_POST['jobDescription'];
+			$jobPrice = $_POST['jobPrice'];
+			
+		
+		
+		if (empty($errors)) {
+			$db = connectToDB();
+			
+			//Insert data to customerJob table
+			$stmt = $conn->prepare("INSERT INTO customerJob (jobPrice, jobTitle, jobDescription, jobType, customerLastName, jobCounty, jobCity, jobAddress) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("ssssssss", $jobPrice, $jobTitle, $jobDescription, $jobType, $userLName, $userCounty, $userCity, $userAddress);
+			
+			if ($stmt->execute()) {
+				echo "New record created successfully";
+			} else {
+				echo "Error: " . $stmt->error;
+			}
+			$stmt->close();
+            $conn->close(); 
+		}
+	}
 	?>
     <header>
         <h1>Select Job Category</h1>
@@ -83,35 +182,35 @@
         <form action="#" method="post" enctype="multipart/form-data">
             <label>Select Service:</label>
             <div>
-                <input type="radio" id="generalContracting" name="service" value="generalContracting">
+                <input type="radio" id="generalContracting" name="jobType" value="General Contracting" required>
                 <label for="generalContracting">General Contracting</label>
             </div>
             <div>
-                <input type="radio" id="plumbing" name="service" value="plumbing">
+                <input type="radio" id="plumbing" name="jobType" value="Plumbing">
                 <label for="plumbing">Plumbing</label>
             </div>
             <div>
-                <input type="radio" id="electrician" name="service" value="electrician">
+                <input type="radio" id="electrician" name="jobType" value="Electrician">
                 <label for="electrician">Electrician</label>
             </div>
             <div>
-                <input type="radio" id="gardening" name="service" value="gardening">
+                <input type="radio" id="gardening" name="jobType" value="Gardening">
                 <label for="gardening">Gardening</label>
             </div>        
 			<div>
-                <input type="radio" id="painting" name="service" value="painting">
+                <input type="radio" id="painting" name="jobType" value="Painting">
                 <label for="painting">Painting</label>
             </div>    
 			<div>
-                <input type="radio" id="hvac" name="service" value="hvac">
+                <input type="radio" id="hvac" name="jobType" value="HVAC">
                 <label for="hvac">HVAC</label>
             </div>
 			<label for="jobTitle">Job Title:</label>
 			<input type="text" id="jobTitle" name="jobTitle" required>
             <label for="details">Job Details:</label>
-            <textarea id="details" name="details" rows="4" required></textarea>     
+            <textarea id="details" name="jobDescription" rows="4" required></textarea>     
 			<label for="price">Your Asking Price $:</label>
-            <input type="price" id="price" name="price" required>
+            <input type="price" id="price" name="jobPrice" required>
            
             <label for="image">Upload a Photo:</label>
             <input type="file" id="image" name="image" accept="image/*">
