@@ -82,7 +82,7 @@
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
 				
 				if ($conn->connect_error) {
-					die("Connection issue: ".$databaseConnection->connect_error);
+					die("Connection issue: ".$conn->connect_error);
 				}			
 			return $conn;
 		}
@@ -131,11 +131,11 @@
 		
 		function getAddress() {
 			global $userEmail, $db;
-			$getAddressQuery = "SELECT customerAddress FROM customer WHERE customerEmail = '$userEmail'";
+			$getAddressQuery = "SELECT customerStreetAddress FROM customer WHERE customerEmail = '$userEmail'";
 			$result = $db->query($getAddressQuery);
 			if ($result) {
 				$row = $result->fetch_assoc();
-				$userCity = $row['customerAddress'];
+				$userAddress = $row['customerStreetAddress'];
 			} else {
 				$userAddress = "N/A";
 			}
