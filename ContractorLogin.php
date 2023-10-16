@@ -94,7 +94,7 @@ $stmt->fetch();
 //if (password_verify($inputPassword, $dbPassword)){
 	//echo "Correct info";
 //Compares to DB info, sends to contractor home page if correct, tells user info is incorrect if false.
-if ($inputPassword == $dbPassword) {
+if (password_verify($inputPassword, $dbPassword)) {
 	$_SESSION['contractorEmail'] = $inputUsername;
 	header('Location: ContractorPage.php');
 	exit;
