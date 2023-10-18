@@ -127,7 +127,7 @@ $errors = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle form submission here
-    // Testing windows defender bs
+   
     $customerFirstName = $_POST['customerFirstName'];
     $customerlastName = $_POST['customerLastName'];
     $customerStreetAddress = $_POST['customerStreetAddress'];
