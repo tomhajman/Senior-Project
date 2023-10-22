@@ -70,7 +70,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
 				
 				if ($conn->connect_error) {
-					die("Connection issue: ".$databaseConnection->connect_error);
+					die("Connection issue: ".$conn->connect_error);
 				}			
 			return $conn;
 		}

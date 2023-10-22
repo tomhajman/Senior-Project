@@ -101,7 +101,6 @@
 			}
 			return $userLName;
 		}
-		$userLName = getLName();
 		
 		function getCounty() {
 			global $userEmail, $db;
@@ -155,7 +154,17 @@
 			$jobTitle = $_POST['jobTitle'];
 			$jobDescription = $_POST['jobDescription'];
 			$jobPrice = $_POST['jobPrice'];
+            
+            $coverImage = $_FILES['coverImage']['tmp_name'];
+            $mimeType = mime_content_type($coverImage);
 			
+            // Check if mime type is one of the expected types
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!in_array($mimeType, $allowedMimeTypes)) {
+                die("Unsupported image type.");
+            }
+
+            $imageData = file_get_contents($coverImage);
 		
 		
 		if (empty($errors)) {
@@ -166,11 +175,22 @@
 			$stmt->bind_param("ssssssss", $jobPrice, $jobTitle, $jobDescription, $jobType, $userLName, $userCounty, $userCity, $userAddress);
 			
 			if ($stmt->execute()) {
-				echo "New record created successfully";
+                $lastInsertedId = mysqli_insert_id($conn);
+				echo "Job posted successfully";
 			} else {
 				echo "Error: " . $stmt->error;
 			}
 			$stmt->close();
+            // Upload cover photo
+            $isCover = 1;
+            $stmt = $conn->prepare("INSERT INTO jobImages (mimeType, imageData, jobID, isCover) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssii", $mimeType, $imageData, $lastInsertedId, $isCover);
+            $stmt->send_long_data(1, $imageData);
+            $stmt->execute();
+            $stmt->close();
+
+            // TODO Upload other photos
+
             $conn->close(); 
 		}
 	}
@@ -211,9 +231,31 @@
             <textarea id="details" name="jobDescription" rows="4" required></textarea>     
 			<label for="price">Your Asking Price $:</label>
             <input type="price" id="price" name="jobPrice" required>
+
+            <label>Job Urgency:</label>
+            <div>
+                <input type="radio" id="low" value=0>
+                <label for="low">Low Urgency - "I need it done, but it's not time sensitive"</label>
+            </div>
+            <div>
+                <input type="radio" id="medium" value=1>
+                <label for="medium">Medium Urgency - "I need it done within a month"</label>
+            </div>
+            <div>
+                <input type="radio" id="high" value=2>
+                <label for="high">High Urgency - "I need it done this week"</label>
+            </div>
+            <div>
+                <input type="radio" id="critical" value=3>
+                <label for="critical">Critical Urgency - "I needed it done yesterday!"</label>
+            </div>
            
-            <label for="image">Upload a Photo:</label>
-            <input type="file" id="image" name="image" accept="image/*">
+            <label for="coverImage">Upload Cover Photo:</label>
+            <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
+            
+            <label for="otherImage">Upload Other Photo(s):</label>
+            <input type="file" id="otherImages" name="otherImage[]" accept="image/*" multiple>
+
             <button type="submit">Submit Request</button>
         </form>
     </div>
