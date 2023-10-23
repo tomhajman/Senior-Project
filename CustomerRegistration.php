@@ -134,8 +134,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $customerFloorApt = $_POST['customerFloorApt'];
     $customerCity = $_POST['customerCity'];
     $customerZip = $_POST['customerZip'];
-	$customerCounty = $_POST['customerCounty'];
-    $customerEmail = $_POST['customerEmailAddress'];
+	  $customerCounty = $_POST['customerCounty'];
+    $customerEmail = strtolower($_POST['customerEmailAddress']);
     $customerPassword = $_POST['customerPassword'];
     $customerPhoneNumber = $_POST['customerPhoneNumber'];
     $confirmPassword = $_POST['confirm_password'];

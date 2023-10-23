@@ -132,17 +132,6 @@
                 $stmt->close();
                 $conn->close();  
                 
-                /*
-                // For demonstration purposes, just print the submitted data
-                echo "<h2>Form Submitted:</h2>";
-                echo "Company Name: " . htmlspecialchars($companyName) . "<br>";
-                echo "Email: " . htmlspecialchars($email) . "<br>";
-                echo "Password: " . htmlspecialchars($password) . "<br>";
-                echo "Selected Options: ";
-                foreach ($options as $option) {
-                    echo htmlspecialchars($option) . ", ";
-                }
-                echo "<br>";*/
             }
         }
         ?>
@@ -167,22 +156,22 @@
             <input type="password" id="confirmPassword" name="confirmPassword" required><br><br>
 
             <label>Areas of expertise:</label><br>
-            <input type="checkbox" id="option1" name="options[]" value="contracting">
+            <input type="checkbox" id="option1" name="options[]" value="Contracting">
             <label for="option1">Contracting (general)</label><br>
 
-            <input type="checkbox" id="option2" name="options[]" value="plumbing">
+            <input type="checkbox" id="option2" name="options[]" value="Plumbing">
             <label for="option2">Plumbing</label><br>
 
-            <input type="checkbox" id="option3" name="options[]" value="electrician">
+            <input type="checkbox" id="option3" name="options[]" value="Electrician">
             <label for="option3">Electrician</label><br>
 
-            <input type="checkbox" id="option4" name="options[]" value="gardening">
+            <input type="checkbox" id="option4" name="options[]" value="Gardening">
             <label for="option4">Gardening</label><br>
 
-            <input type="checkbox" id="option5" name="options[]" value="painting">
+            <input type="checkbox" id="option5" name="options[]" value="Painting">
             <label for="option5">Painting</label><br>
 
-            <input type="checkbox" id="option6" name="options[]" value="hvac">
+            <input type="checkbox" id="option6" name="options[]" value="HVAC">
             <label for="option6">HVAC</label><br><br>
 
             <input type="submit" value="Register">

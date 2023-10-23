@@ -202,7 +202,7 @@
         <form action="#" method="post" enctype="multipart/form-data">
             <label>Select Service:</label>
             <div>
-                <input type="radio" id="generalContracting" name="jobType" value="General Contracting" required>
+                <input type="radio" id="generalContracting" name="jobType" value="Contracting" required>
                 <label for="generalContracting">General Contracting</label>
             </div>
             <div>
@@ -234,7 +234,7 @@
 
             <label>Job Urgency:</label>
             <div>
-                <input type="radio" id="low" value=0>
+                <input type="radio" id="low" value=0 required>
                 <label for="low">Low Urgency - "I need it done, but it's not time sensitive"</label>
             </div>
             <div>
