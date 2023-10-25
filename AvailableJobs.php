@@ -82,12 +82,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		//Functions that will be called which will be attatched to the filters in the form, will find and retrieve jobs based on category.
 		function allJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else
@@ -96,12 +96,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function electricalJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Electrical'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Electrical'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else
@@ -110,12 +110,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function plumbingJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Plumbing'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType='Plumbing'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else
@@ -124,12 +124,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function gardeningJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Gardening'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType='Gardening'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else
@@ -138,12 +138,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function hvacJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='HVAC'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType='HVAC'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else 
@@ -152,12 +152,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function paintingJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Painting'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType='Painting'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else 
@@ -166,12 +166,12 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 		
 		function mountingJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob WHERE jobType='Mounting'";
+			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType='Mounting'";
 			$result = $db->query($getJobInfo);
 			if (mysqli_num_rows($result) > 0) {
 			echo "<ul>";
 			while ($record = mysqli_fetch_assoc($result)) {
-				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']."   ".$record['jobPrice']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['customerLastName']." "."</li>";
+				echo "<li>".$record['jobType']." ".$record['jobTitle']." ".$record['jobDescription']." ".$record['jobCounty']." ".$record['jobCity']." ".$record['jobAddress']." ".$record['jobUrgency']." ".$record['customerLastName']." "."</li>";
 			}
 			echo "</ul>";
 		} else

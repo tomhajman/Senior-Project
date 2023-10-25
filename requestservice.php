@@ -89,6 +89,17 @@
 		$db = connectToDB();
 		
 		//Functions used to pull values from the database, I don't know if this is the most optimal way of doing it, but this is the way I found that works.
+		function getID() {
+			global $userEmail, $db;
+			$getIDQuery = "SELECT customerID FROM customer WHERE customerEmail = '$userEmail'";
+			$result = $db->query($getIDQuery);
+			if ($result) {
+				$row = $result->fetch_assoc();
+				$userID = $row['customerID'];
+			}
+			return $userID;
+		}
+		
 		function getLName() {
 			global $userEmail, $db;
 			$getLNameQuery = "SELECT customerLastName FROM customer WHERE customerEmail = '$userEmail'";
@@ -142,6 +153,7 @@
 		}
 		
 		//Assign variables to pulled values from DB for use in this form.
+		$userID = getID();
 		$userLName = getLName();
 		$userCounty = getCounty();	
 		$userCity = getCity();
@@ -153,7 +165,7 @@
 			$jobType = $_POST['jobType'];
 			$jobTitle = $_POST['jobTitle'];
 			$jobDescription = $_POST['jobDescription'];
-			$jobPrice = $_POST['jobPrice'];
+			$jobUrgency = $_POST['jobUrgency'];
             
             $coverImage = $_FILES['coverImage']['tmp_name'];
             $mimeType = mime_content_type($coverImage);
@@ -171,8 +183,8 @@
 			$db = connectToDB();
 			
 			//Insert data to customerJob table
-			$stmt = $conn->prepare("INSERT INTO customerJob (jobPrice, jobTitle, jobDescription, jobType, customerLastName, jobCounty, jobCity, jobAddress) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("ssssssss", $jobPrice, $jobTitle, $jobDescription, $jobType, $userLName, $userCounty, $userCity, $userAddress);
+			$stmt = $conn->prepare("INSERT INTO customerJob (customerID, jobTitle, jobDescription, jobType, customerLastName, jobCounty, jobCity, jobAddress, jobUrgency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("isssssssi", $userID, $jobTitle, $jobDescription, $jobType, $userLName, $userCounty, $userCity, $userAddress, $jobUrgency);
 			
 			if ($stmt->execute()) {
                 $lastInsertedId = mysqli_insert_id($conn);
@@ -229,24 +241,22 @@
 			<input type="text" id="jobTitle" name="jobTitle" required>
             <label for="details">Job Details:</label>
             <textarea id="details" name="jobDescription" rows="4" required></textarea>     
-			<label for="price">Your Asking Price $:</label>
-            <input type="price" id="price" name="jobPrice" required>
 
             <label>Job Urgency:</label>
             <div>
-                <input type="radio" id="low" value=0 required>
+                <input type="radio" id="low" name="jobUrgency" value=0 required>
                 <label for="low">Low Urgency - "I need it done, but it's not time sensitive"</label>
             </div>
             <div>
-                <input type="radio" id="medium" value=1>
+                <input type="radio" id="medium" name="jobUrgency" value=1>
                 <label for="medium">Medium Urgency - "I need it done within a month"</label>
             </div>
             <div>
-                <input type="radio" id="high" value=2>
+                <input type="radio" id="high" name="jobUrgency" value=2>
                 <label for="high">High Urgency - "I need it done this week"</label>
             </div>
             <div>
-                <input type="radio" id="critical" value=3>
+                <input type="radio" id="critical" name="jobUrgency" value=3>
                 <label for="critical">Critical Urgency - "I needed it done yesterday!"</label>
             </div>
            
