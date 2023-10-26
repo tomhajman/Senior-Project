@@ -213,13 +213,12 @@
           <a href="#">Messages</a>
           <a href="#">Service History</a>
             <a href="#">View Contractors</a>
-            <a href="#">Account Settings</a>
+            <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="CustomerLogin.php">Log Out</a>
         </div>
     </div>
     <div class="welcome-user">
         Welcome, <?php echo $userFName; ?><br>
-        Address: <?php echo $userAddress; ?><br>
         Email: <?php echo $userEmail; ?>
     </div>
   </header>
