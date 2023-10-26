@@ -199,9 +199,27 @@
             $stmt->bind_param("ssii", $mimeType, $imageData, $lastInsertedId, $isCover);
             $stmt->send_long_data(1, $imageData);
             $stmt->execute();
-            $stmt->close();
+            //$stmt->close();
 
-            // TODO Upload other photos
+            // Upload other photos
+
+            $isCover = 0;
+            
+            // Loop through each uploaded file using foreach
+            foreach ($_FILES['otherImages']['error'] as $i => $error) {
+                if ($error == UPLOAD_ERR_OK) {
+                    $imgFile = $_FILES['otherImages']['tmp_name'][$i];
+                    $mime_type = mime_content_type($imgFile);
+                    // Chceck if the image is of allowed type, if not - skip it
+                    if(!in_array($mimeType, $allowedMimeTypes)){
+                        continue;
+                    }
+                    $imageData = file_get_contents($imgFile);
+
+                    $stmt->bind_param("ssii", $mime_type, $imageData, $lastInsertedId, $isCover);
+                    $stmt->execute();
+                }
+            }
 
             $conn->close(); 
 		}
@@ -264,7 +282,7 @@
             <input type="file" id="coverImage" name="coverImage" accept="image/*" required>
             
             <label for="otherImage">Upload Other Photo(s):</label>
-            <input type="file" id="otherImages" name="otherImage[]" accept="image/*" multiple>
+            <input type="file" id="otherImages" name="otherImages[]" accept="image/*" multiple>
 
             <button type="submit">Submit Request</button>
         </form>
