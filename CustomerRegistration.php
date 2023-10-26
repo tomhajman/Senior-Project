@@ -246,35 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script>
-var modal = document.getElementById('id01');
-
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-function validateForm() {
-  var customerFirstName = document.forms[0]["customerFirstName"].value;
-  var customerlastName = document.forms[0]["customerLastName"].value;
-  var customerStreetAddress = document.forms[0]["customerStreetAddress"].value;
-  var customerCity = document.forms[0]["customerCity"].value;
-  var customerZip = document.forms[0]["customerZip"].value;
-  var customerCounty = document.forms[0]["customerCounty"].value;
-  var customerEmail = document.forms[0]["customerEmailAddress"].value;
-  var customerPassword = document.forms[0]["customerPassword"].value;
-  var confirmPassword = document.forms[0]["confirm_password"].value;
-
-  var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-  if (customerFirstName === "" || customerlastName === "" || customerStreetAddress === "" || customerCity === "" || customerZip === "" || customerCounty === "" || customerEmail === "" || !customerPassword.match(passwordRegex) || confirmPassword === "") {
-    document.getElementById('error-message').innerHTML = "Please complete all fields and ensure the customerPassword is more than 8 digits, contains both uppercase and lowercase letters, numbers, and at least one special character.";
-    return false;
-  } else {
-    document.getElementById('error-message').innerHTML = "";
-    return true;
-  }
-}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 </script>
 
 </body>
