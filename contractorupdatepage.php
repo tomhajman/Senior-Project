@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Update Contractor Account</title>
     <style>
         body {

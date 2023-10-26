@@ -105,8 +105,8 @@ $conn->close();
 ?>
 
 <form action="" method="post">
-<label for="username"><b>Username</b></label>
-<input type="username" placeholder="Enter Username" name="username" required>
+<label for="username"><b>Email</b></label>
+<input type="username" placeholder="Enter Email" name="username" required>
 
 <label for="password"><b>Password</b></label>
 <input type="password" placeholder="Enter Password" name="password" required>

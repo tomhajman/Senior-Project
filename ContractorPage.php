@@ -173,7 +173,7 @@
                 <a href="#">Messages</a>
                 <a href="AvailableJobs.php">View Available Jobs</a>
                 <a href="#">Job History</a>
-                <a href="#">Account Settings</a>
+                <a href="ContractorUpdatePage.php">Account Settings</a>
                 <a href="ContractorLogin.php">Log Out</a>
             </div>
         </div>
