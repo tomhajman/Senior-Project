@@ -227,6 +227,7 @@
   </header>
 
   <div class="w3-content w3-container w3-padding-64" id="book-service">
+    <a href="CustomerPage.php" class="w3-button">Back</a>
     <h2>Manage your jobs</h2>
   </div>
 
@@ -278,16 +279,6 @@
         
     ?>
 
-  <div class="w3-content w3-container w3-padding-64" id="services">
-    <h3 class="w3-center">OUR SERVICES</h3>
-    <div class="w3-row">
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
-        <h4>TV Mounting</h4>
-        <p>We professionally mount your TV on the wall.</p>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>
