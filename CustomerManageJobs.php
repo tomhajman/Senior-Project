@@ -194,15 +194,18 @@
 				}			
 			return $conn;
 		}
-		$db = connectToDB();
-		$getFNameQuery = "SELECT customerFirstName FROM customer WHERE customerEmail = '$userEmail'";
-		$result = $db->query($getFNameQuery);
-		if ($result) {
-			$row = $result->fetch_assoc();
-			$userFName = $row['customerFirstName'];
+
+		$conn = connectToDB();
+		$getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
+        $getCustomerInfo->bind_param("s", $userEmail);
+
+		if ($getCustomerInfo->execute()) {
+			$getCustomerInfo->bind_result($userFName, $customerID);
+            $getCustomerInfo->fetch();
 		} else {
 			$userFName = "User";
 		}
+        $getCustomerInfo->close();
 			
 		
 	?>	
@@ -213,7 +216,7 @@
           <a href="#">Messages</a>
           <a href="#">Service History</a>
             <a href="#">View Contractors</a>
-            <a href="CustomerUpdatePage.php">Account Settings</a>
+            <a href="#">Account Settings</a>
             <a href="CustomerLogin.php">Log Out</a>
         </div>
     </div>
@@ -222,10 +225,58 @@
         Email: <?php echo $userEmail; ?>
     </div>
   </header>
+
   <div class="w3-content w3-container w3-padding-64" id="book-service">
-    <a href="requestservice.php" class="w3-button w3-jumbo">Book Service</a>
-    <a href="CustomerManageJobs.php" class="w3-button w3-jumbo">Manage Jobs</a>
+    <h2>Manage your jobs</h2>
   </div>
+
+    <?php
+        $getJobs = $conn->prepare("SELECT * FROM customerJob WHERE customerID = ?");
+        $getJobs->bind_param("i", $customerID);
+
+        if($getJobs->execute()){
+            $result = $getJobs->get_result();
+            $getJobs->close();
+
+            if($result->num_rows > 0) {
+                echo '<div class="w3-row">';
+                echo "<table border='1'>";
+                echo "<tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th>Job Type</th>
+                        <th>Job Status</th>
+                        <th>City</th>
+                        <th>Address</th>
+                        <th>Urgency</th>
+                        <th></th>
+                      </tr>";
+                
+                while($row = $result->fetch_assoc()) {
+                    $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
+                    $getID = $getCoverPicture->fetch_assoc();
+                    echo "<tr>
+                            <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>
+                            <td>{$row['jobTitle']}</td>
+                            <td>{$row['jobType']}</td>
+                            <td>{$row['jobStatus']}</td>
+                            <td>{$row['jobCity']}</td>
+                            <td>{$row['jobAddress']}</td>
+                            <td>{$row['jobUrgency']}</td>
+                            <td><button>Edit</button></td>
+                          </tr>";
+                }
+                
+                echo "</table>";
+                echo "</div>";
+            } else {
+                echo "Nothing here but crickets!";
+            }
+            
+            $result->free();
+        }
+        
+    ?>
 
   <div class="w3-content w3-container w3-padding-64" id="services">
     <h3 class="w3-center">OUR SERVICES</h3>
@@ -234,31 +285,6 @@
         <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
         <h4>TV Mounting</h4>
         <p>We professionally mount your TV on the wall.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-        <h4>Plumbing</h4>
-        <p>We fix plumbing issues efficiently.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
-        <h4>Electrical Works</h4>
-        <p>Professional electrical services for your home.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-        <h4>Handyman</h4>
-        <p>General handyman services for various tasks.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-leaf w3-margin-bottom w3-jumbo"></i>
-        <h4>Gardening</h4>
-        <p>Professional gardening and landscaping services.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-snowflake-o w3-margin-bottom w3-jumbo"></i>
-        <h4>HVAC</h4>
-        <p>Heating, ventilation, and air conditioning services.</p>
       </div>
     </div>
   </div>
