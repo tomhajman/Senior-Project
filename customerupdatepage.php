@@ -255,6 +255,7 @@
    <div class="dropdown">
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
+				<a href="CustomerPage.php">Home</a>
                 <a href="#">Messages</a>
                 <a href="#">Service History</a>
                 <a href="#">View Contractors</a>
