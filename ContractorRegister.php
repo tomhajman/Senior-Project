@@ -120,7 +120,7 @@
                 $conn = connectToDatabase();
 
                 // Insert the data into table
-                $stmt = $conn->prepare("INSERT INTO contractor (contractorName, contractorEmail, contractorPassword, contractorExpertise) VALUES (?, ?, ?, ?)");
+                $stmt = $conn->prepare("INSERT INTO contractor (contractorName, contractorPhoneNumber, contractorEmail, contractorPassword, contractorExpertise) VALUES (?, ?, ?, ?)");
                 $stmt->bind_param("ssss", $companyName, $email, $hashedPassword, $options);
         
                 if ($stmt->execute()) {
@@ -139,6 +139,9 @@
         <form action="" method="post">
             <label for="companyName">Company Name:</label>
             <input type="text" id="companyName" name="companyName" required><br><br>
+			
+			<label for="phone">Phone Number:</label>
+            <input type="text" id="phone" name="phone" required><br><br>
 
             <label for="email">Email Address:</label>
             <?php if (isset($errors['email'])): ?>
