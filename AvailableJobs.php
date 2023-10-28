@@ -23,9 +23,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     
   </div>
   <div class="w3-bar-block">
-    <a href="#jobs" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-briefcase fa-fw w3-margin-right"></i>AVAILABLE JOBS</a> 
-    <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user fa-fw w3-margin-right"></i>Account Settings</a> 
-    <a href="#contact" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-envelope fa-fw w3-margin-right"></i>Messages</a>
+    <a href="availableJobs.php" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-text-teal"><i class="fa fa-briefcase fa-fw w3-margin-right"></i>AVAILABLE JOBS</a> 
+    <a href="ContractorPage.php" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-user fa-fw w3-margin-right"></i>Home</a> 
   </div>
   
 </nav>

@@ -1,15 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-    <title>Update Contractor Account</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        body, h1, h2, h3, h4, h5, h6 {
+               font-family: "Lato", sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            color: #333;
+            line-height: 1.8;
+            background-color: #f2f2f2;
             margin: 0;
             padding: 0;
         }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header .dropdown {
+            position: absolute;
+            left: 0;
+        }
+
+        .header .dropbtn {
+            background-color: #333;
+            color: #fff;
+            padding: 16px;
+            font-size: 24px;
+            border: none;
+        }
+
+        .header .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            left: 0;
+            top: 100%;
+            z-index: 1;
+        }
+
+        .header .dropdown-content a {
+            color: gray;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .header .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .header .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .header .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        .welcome-contractor {
+            margin-right: 10px;
+            margin-left: auto;
+        }
+
         .container {
             max-width: 500px;
             margin: 50px auto;
@@ -18,11 +86,13 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         label {
             font-weight: bold;
             display: inline-block;
             width: 250px;
         }
+
         input[type="text"],
         input[type="email"],
         input[type="password"] {
@@ -32,9 +102,11 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         input[type="checkbox"] {
             margin-right: 5px;
         }
+
         input[type="submit"] {
             background-color: #007bff;
             color: white;
@@ -43,129 +115,168 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        button {
-            background-color: #007bff;
-            color: white;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            float: right;
+
+        .success-message {
+            color: green;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        .error-message {
+            color: red;
         }
+    </style>
     </style>
 </head>
 <body>
+<?php
+    session_start();
+    include 'DBCredentials.php';
+    $userEmail = $_SESSION['contractorEmail'];
 
-    <div class="container">
-        <h1>Update Contractor Account</h1>
+    function connectToDB() {
+        global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+        $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
 
-        <?php
-        session_start();
-        include 'DBCredentials.php';
+        if ($conn->connect_error) {
+            die("Connection issue: " . $conn->connect_error);
+        }
+        return $conn;
+    }
 
-        $errors = [];
+    $db = connectToDB();
+    $getNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
+    $result = $db->query($getNameQuery);
+    if ($result) {
+        $row = $result->fetch_assoc();
+        $userName = $row['contractorName'];
+    } else {
+        $userName = "Contractor";
+    }
+	
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $userEmail = $_SESSION['contractorEmail'];
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Handle form submission here
-            $companyName = $_POST['companyName'];
-            $email = strtolower($_POST['email']);
-            $password = $_POST['password'];
-            $confirmPassword = $_POST['confirmPassword'];
-            $options = isset($_POST['options']) ? serialize($_POST['options']) : [];
+        // Updating profile
+        if (isset($_POST['updateProfile'])) {
+            $contractorName = $_POST['contractorName'];
+            $contractorPhoneNumber = $_POST['contractorPhone'];
+            $contractorEmail = $_POST['contractorEmail'];
+            $contractorExpertise = implode(',', $_POST['contractorExpertise']);
 
-            // Hash the contractor's password
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $updateProfileQuery = $conn->prepare("UPDATE contractor SET contractorName = ?, contractorPhoneNumber = ?, contractorEmail = ?, contractorExpertise = ? WHERE contractorEmail = ?");
+            $updateProfileQuery->bind_param("sssss", $contractorName, $contractorPhoneNumber, $contractorEmail, $contractorExpertise, $userEmail);
 
-            // Check if email already exists in the database
-            $conn = connectToDatabase();
-            $findDuplicate = $conn->prepare("SELECT COUNT(contractorEmail) FROM contractor WHERE contractorEmail = ? AND contractorEmail != ?");
-            $findDuplicate->bind_param("ss", $email, $_SESSION['contractorEmail']);
-            $findDuplicate->execute();
-            $findDuplicate->bind_result($numOfDuplicates);
-            $findDuplicate->fetch();
-            $findDuplicate->close();
-
-            if ($numOfDuplicates != 0) {
-                $errors['email'] = "Email address already exists.";
+            if ($updateProfileQuery->execute()) {
+                echo "<div class='success-message'>Profile updated successfully</div>";
+            } else {
+                echo "<div class='error-message'>Error updating profile</div>";
             }
+            $updateProfileQuery->close();
+        }
 
-            // Validate email
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = "Invalid email address.";
-            }
+        // Updating password
+        if (isset($_POST['updatePassword'])) {
+            $currentPassword = $_POST['currentPassword'];
+            $newPassword = $_POST['newPassword'];
+            $confirmNewPassword = $_POST['confirmNewPassword'];
 
-            // Validate password and confirm password
-            if (!empty($password) && $password !== $confirmPassword) {
-                $errors['password'] = "Password and Confirm Password must match.";
-            }
+            $getUserDataQuery = $conn->prepare("SELECT contractorPassword FROM contractor WHERE contractorEmail = ?");
+            $getUserDataQuery->bind_param("s", $userEmail);
+            $getUserDataQuery->execute();
+            $result = $getUserDataQuery->get_result();
+            $userData = $result->fetch_assoc();
+            $getUserDataQuery->close();
 
-            if (empty($errors)) {
-                $conn = connectToDatabase();
+            if ($userData) {
+                if (password_verify($currentPassword, $userData['contractorPassword'])) {
+                    if ($newPassword === $confirmNewPassword) {
+                        $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);
+                        $updatePasswordQuery = $conn->prepare("UPDATE contractor SET contractorPassword = ? WHERE contractorEmail = ?");
+                        $updatePasswordQuery->bind_param("ss", $hashedNewPassword, $userEmail);
 
-                // Update the contractor's data in the database
-                $stmt = $conn->prepare("UPDATE contractor SET contractorName = ?, contractorEmail = ?, contractorPassword = ?, contractorExpertise = ? WHERE contractorEmail = ?");
-                $stmt->bind_param("sssss", $companyName, $email, $hashedPassword, $options, $_SESSION['contractorEmail']);
-
-                if ($stmt->execute()) {
-                    echo "Account updated successfully";
+                        if ($updatePasswordQuery->execute()) {
+                            echo "<div class='success-message'>Password updated successfully</div>";
+                        } else {
+                            echo "<div class='error-message'>Error updating password</div>";
+                        }
+                        $updatePasswordQuery->close();
+                    } else {
+                        echo "<div class='error-message'>New passwords do not match</div>";
+                    }
                 } else {
-                    echo "Error: " . $stmt->error;
+                    echo "<div class='error-message'>Current Password is incorrect</div>";
                 }
-
-                $stmt->close();
-                $conn->close();
+            } else {
+                echo "<div class='error-message'>User data not found</div>";
             }
         }
-        ?>
+    }
+    $getUserDataQuery = $conn->prepare("SELECT contractorName, contractorPhoneNumber, contractorEmail, contractorExpertise FROM contractor WHERE contractorEmail = ?");
+    $getUserDataQuery->bind_param("s", $_SESSION['contractorEmail']);
+    $getUserDataQuery->execute();
+    $result = $getUserDataQuery->get_result();
+    $userData = $result->fetch_assoc();
+    $getUserDataQuery->close();
+    $conn->close();
+?>
+    <div class="header">
+        <div class="dropdown">
+            <button class="dropbtn">...</button>
+            <div class="dropdown-content">
+                <a href="ContractorPage.php">Home</a>
+				<a href="#">Messages</a>
+                <a href="AvailableJobs.php">Available Jobs</a>
+                <a href="#">Job History</a>
+                <a href="ContractorUpdatePage.php">Account Settings</a>
+                <a href="ContractorLogin.php">Log Out</a>
+            </div>
+        </div>
+        <div class="welcome-contractor">Welcome, <?php echo $userName; ?></div>
+    </div>
 
+    <div class="container">
+        <h1>Update Profile</h1>
         <form action="" method="post">
-            <label for="companyName">Company Name:</label>
-            <input type="text" id="companyName" name="companyName" required value="<?php echo $_SESSION['contractorName']; ?>"><br><br>
+            <label for="contractorName">Company Name:</label>
+            <input type="text" id="contractorName" name="contractorName" value="<?php echo $userData['contractorName']; ?>" required><br><br>
 
-            <label for="email">Email Address:</label>
-            <?php if (isset($errors['email'])): ?>
-                <div style="color: red;"><?php echo $errors['email']; ?></div>
-            <?php endif; ?>
-            <input type="text" id="email" name="email" required value="<?php echo $_SESSION['contractorEmail']; ?>"><br><br>
+            <label for="contractorPhone">Phone Number:</label>
+            <input type="text" id="contractorPhone" name="contractorPhone" value="<?php echo $userData['contractorPhoneNumber']; ?>" required><br><br>
 
-            <label for="password">New Password:</label>
-            <?php if (isset($errors['password'])): ?>
-                <div style="color: red;"><?php echo $errors['password']; ?></div>
-            <?php endif; ?>
-            <input type="password" id="password" name="password"><br><br>
+            <label for="contractorEmail">Email Address:</label>
+            <input type="email" id="contractorEmail" name="contractorEmail" value="<?php echo $userData['contractorEmail']; ?>" required><br><br>
 
-            <label for="confirmPassword">Confirm New Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword"><br><br>
+            <label for="contractorExpertise">Areas of Expertise:</label><br>
+            <?php
+            $expertiseArray = explode(',', $userData['contractorExpertise']);
+            $areasOfExpertise = array('Contracting', 'Plumbing', 'Electrician', 'Gardening', 'Painting', 'HVAC');
+            foreach ($areasOfExpertise as $area) {
+                $checked = in_array($area, $expertiseArray) ? 'checked' : '';
+                echo "<input type='checkbox' name='contractorExpertise[]' value='$area' $checked><label>$area</label><br>";
+            }
+            ?>
 
-            <label>Areas of expertise:</label><br>
-            <input type="checkbox" id="option1" name="options[]" value="contracting" <?php if (in_array("contracting", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option1">Contracting (general)</label><br>
-
-            <input type="checkbox" id="option2" name="options[]" value="plumbing" <?php if (in_array("plumbing", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option2">Plumbing</label><br>
-
-            <input type="checkbox" id="option3" name="options[]" value="electrician" <?php if (in_array("electrician", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option3">Electrician</label><br>
-
-            <input type="checkbox" id="option4" name="options[]" value="gardening" <?php if (in_array("gardening", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option4">Gardening</label><br>
-
-            <input type="checkbox" id="option5" name="options[]" value="painting" <?php if (in_array("painting", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option5">Painting</label><br>
-
-            <input type="checkbox" id="option6" name="options[]" value="hvac" <?php if (in_array("hvac", unserialize($_SESSION['contractorExpertise']))) echo 'checked'; ?>>
-            <label for="option6"> HVAC</label><br><br>
-
-            <input type="submit" value="Update Account">
+            <input type="submit" name="updateProfile" value="Update Profile">
         </form>
     </div>
 
+    <div class="container">
+        <h2>Change Password</h2>
+        <form action="" method="post">
+            <label for="currentPassword">Current Password:</label>
+            <input type="password" id="currentPassword" name="currentPassword" required><br><br>
+
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword" required><br><br>
+
+            <label for="confirmNewPassword">Confirm New Password:</label>
+            <input type="password" id="confirmNewPassword" name="confirmNewPassword" required><br><br>
+
+            <input type="submit" name="updatePassword" value="Change Password">
+        </form>
+    </div>
 </body>
 </html>
-
