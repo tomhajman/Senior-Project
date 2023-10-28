@@ -94,26 +94,36 @@ session_start();
 <div class="w3-content w3-container w3-padding-64" id="services">
   <h3 class="w3-center">OUR SERVICES</h3>
   <div class="w3-row">
-    <div class="w3-col m4 w3-center w3-padding-large">
-      <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
-      <h4>TV Mounting</h4>
-      <p>We professionally mount your TV on the wall.</p>
-    </div>
-    <div class="w3-col m4 w3-center w3-padding-large">
-      <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-      <h4>Plumbing</h4>
-      <p>We fix plumbing issues efficiently.</p>
-    </div>
-    <div class="w3-col m4 w3-center w3-padding-large">
-      <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
-      <h4>Electrical Works</h4>
-      <p>Professional electrical services for your home.</p>
-    </div>
-    <div class="w3-col m4 w3-center w3-padding-large">
-      <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-      <h4>Handyman</h4>
-      <p>General handyman services for various tasks.</p>
-    </div>
+     <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
+        <h4>TV Mounting</h4>
+        <p>We professionally mount your TV on the wall.</p>
+      </div>
+      <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
+        <h4>Plumbing</h4>
+        <p>We fix plumbing issues efficiently.</p>
+      </div>
+      <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
+        <h4>Electrical Works</h4>
+        <p>Professional electrical services for your home.</p>
+      </div>
+      <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
+        <h4>Handyman</h4>
+        <p>General handyman services for various tasks.</p>
+      </div>
+      <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-leaf w3-margin-bottom w3-jumbo"></i>
+        <h4>Gardening</h4>
+        <p>Professional gardening and landscaping services.</p>
+      </div>
+      <div class="w3-col m4 w3-center w3-padding-large">
+        <i class="fa fa-snowflake-o w3-margin-bottom w3-jumbo"></i>
+        <h4>HVAC</h4>
+        <p>Heating, ventilation, and air conditioning services.</p>
+      </div>
   </div>
 </div>
 
