@@ -150,12 +150,13 @@
 	if (isset($_GET['id'])) {
 		$conn = connectToDB();
 		$id = $_GET['id'];
-		$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobID = '$id'";
+		$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName, customerID FROM customerJob WHERE jobID = '$id'";
 		$result = $conn->query($getJobInfo);
 		$record = mysqli_fetch_assoc($result);
+		//Pull customerID from customerJob table to later use to gather info from customer table
+		$custID = $record['customerID'];
 		
-		//I tried making these two queries just one through a join, but I kept getting "Trying to access array offset on value of type null error" for every field. This will be fixed after the presentation for bandwidth preservation.
-		$getCustInfo = "SELECT customerFirstName, customerEmail, customerPhoneNumber FROM customer WHERE jobID='$id'";
+		$getCustInfo = "SELECT customerFirstName, customerEmail, customerPhoneNumber FROM customer WHERE customerID= {$record['customerID']}";
 		$result2 = $conn->query($getCustInfo);
 		$record2 = mysqli_fetch_assoc($result2);
 		
