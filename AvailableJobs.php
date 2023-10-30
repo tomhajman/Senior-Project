@@ -14,8 +14,8 @@ table {
 	width: auto;
 }
 td {
-	width: 125px;
-	height: 50px;
+	width: 160px;
+	height: 90px;
 	text-align: center;
 }
 tr:nth-child(even) {background-color: #b4cbed;}
@@ -24,7 +24,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 <body class="w3-light-grey w3-content" style="max-width:1600px">
 
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:150px;" id="mySidebar"><br>
   <div class="w3-container">
     <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
       <i class="fa fa-remove"></i>
@@ -43,7 +43,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
 
 <!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:300px">
+<div class="w3-main" style="margin-left:150px">
 
   <!-- Header -->
   <header id="jobs">
@@ -93,11 +93,13 @@ tr:nth-child(even) {background-color: #b4cbed;}
 		//Fixed output to be in proper table format.
 		function allJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob";
+			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob";
 			$result = $db->query($getJobInfo);
+			
 			if (mysqli_num_rows($result) > 0) {
 			echo '<table>';
 			echo '<tr>';
+			echo '<th></th>';
 			echo '<th>Job Type</th>';
 			echo '<th>Job Title</th>';
 			echo '<th>Job County</th>';
@@ -107,7 +109,12 @@ tr:nth-child(even) {background-color: #b4cbed;}
 			echo '<th>Customer Last Name</th>';
 			echo '</tr>';
 			while ($record = mysqli_fetch_assoc($result)) {
+				//Retrieve cover photo
+				$getCoverPicture = $db->query("SELECT id FROM jobImages WHERE jobID='{$record['jobID']}' AND isCover = 1 ");
+				$getID = $getCoverPicture->fetch_assoc();
+				
 				echo '<tr>';
+				echo "<td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>";
 				echo '<td>'.$record['jobType'].'</td>';
 				echo '<td>'.$record['jobTitle'].'</td>';
 				echo '<td>'.$record['jobCounty'].'</td>';
@@ -115,6 +122,8 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				echo '<td>'.$record['jobAddress'].'</td>';
 				echo '<td>'.$record['jobUrgency'].'</td>';
 				echo '<td>'.$record['customerLastName'].'</td>';
+				echo '<td><a href="jobDetails.php?id='.$record['jobID'].'">View Listing</a></td>';
+				echo '<input type="hidden" name="jobID" value="'.$record['jobID'].'">';
 				echo '</tr>';
 			}
 		} else
@@ -123,11 +132,13 @@ tr:nth-child(even) {background-color: #b4cbed;}
 		
 		function jobTypeFilter($filter) {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType= '$filter'";
+			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType= '$filter'";
 			$result = $db->query($getJobInfo);
+			
 			if (mysqli_num_rows($result) > 0) {
 			echo '<table>';
 			echo '<tr>';
+			echo '<th></th>';
 			echo '<th>Job Type</th>';
 			echo '<th>Job Title</th>';
 			echo '<th>Job County</th>';
@@ -136,8 +147,13 @@ tr:nth-child(even) {background-color: #b4cbed;}
 			echo '<th>Job Urgency</th>';
 			echo '<th>Customer Last Name</th>';
 			echo '</tr>';
-			while ($record = mysqli_fetch_assoc($result)) {
+			while ($record = mysqli_fetch_assoc($result)) {				
+				//Retrieve cover photo
+				$getCoverPicture = $db->query("SELECT id FROM jobImages WHERE jobID='{$record['jobID']}' AND isCover = 1 ");
+				$getID = $getCoverPicture->fetch_assoc();
+				
 				echo '<tr>';
+				echo "<td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>";
 				echo '<td>'.$record['jobType'].'</td>';
 				echo '<td>'.$record['jobTitle'].'</td>';
 				echo '<td>'.$record['jobCounty'].'</td>';
@@ -145,6 +161,8 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				echo '<td>'.$record['jobAddress'].'</td>';
 				echo '<td>'.$record['jobUrgency'].'</td>';
 				echo '<td>'.$record['customerLastName'].'</td>';
+				echo '<td><a href="jobDetails.php?id='.$record['jobID'].'">View Listing</a></td>';
+				echo '<input type="hidden" name="jobID" value="'.$record['jobID'].'">';
 				echo '</tr>';
 			}
 		} else
