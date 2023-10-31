@@ -264,7 +264,7 @@
                             <td>{$row['jobCity']}</td>
                             <td>{$row['jobAddress']}</td>
                             <td>{$row['jobUrgency']}</td>
-                            <td><button>Edit</button></td>
+                            <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>
                           </tr>";
                 }
                 
@@ -275,6 +275,7 @@
             }
             
             $result->free();
+            $conn->close();
         }
         
     ?>

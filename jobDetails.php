@@ -166,7 +166,6 @@
 		
 		//Retrieve other photos
 		$getPhotos = $conn->query("SELECT id FROM jobImages WHERE jobID=$id AND isCover != 1");
-		$getOtherID = $getPhotos->fetch_assoc();
 		
 		echo '<div class="jobDetails">'.'<h2>'.$record['jobTitle'].'</h1>';
 		echo "<img src='jobImage.php?id={$getID['id']}' width='300px' height='120px' alt='Database Image'><br>";
