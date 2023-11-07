@@ -10,6 +10,7 @@
     .contractor-card {
       width: 30%;
       margin-bottom: 20px;
+      display: inline-block; /* Set contractor cards to be aligned */
     }
     .main-content {
       margin-left: 300px;
@@ -91,8 +92,14 @@
           echo '<li><b>Phone:</b> ' . $row["ContractorPhoneNumber"] . '</li>';
           echo '<li><b>Expertise:</b> ';
           if (is_array($expertise)) {
+            $expertiseCount = count($expertise);
+            $count = 0;
             foreach ($expertise as $singleExpertise) {
-              echo '<br>' . $singleExpertise;
+              echo $singleExpertise;
+              $count++;
+              if ($count < $expertiseCount) {
+                echo ', '; // Add a comma if there are more expertise to display
+              }
             }
           } else {
             echo $expertise;
