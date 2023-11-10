@@ -184,7 +184,7 @@
 
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['customerEmail'];
+		$userEmail = htmlspecialchars($_SESSION['customerEmail']);
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -194,15 +194,18 @@
 				}			
 			return $conn;
 		}
-		$db = connectToDB();
-		$getFNameQuery = "SELECT customerFirstName FROM customer WHERE customerEmail = '$userEmail'";
-		$result = $db->query($getFNameQuery);
-		if ($result) {
-			$row = $result->fetch_assoc();
-			$userFName = $row['customerFirstName'];
+
+		$conn = connectToDB();
+		$getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
+        $getCustomerInfo->bind_param("s", $userEmail);
+
+		if ($getCustomerInfo->execute()) {
+			$getCustomerInfo->bind_result($userFName, $customerID);
+            $getCustomerInfo->fetch();
 		} else {
 			$userFName = "User";
 		}
+        $getCustomerInfo->close();
 			
 		
 	?>	
@@ -213,7 +216,7 @@
           <a href="#">Messages</a>
           <a href="#">Service History</a>
             <a href="#">View Contractors</a>
-            <a href="CustomerUpdatePage.php">Account Settings</a>
+            <a href="#">Account Settings</a>
             <a href="CustomerLogin.php">Log Out</a>
         </div>
     </div>
@@ -222,47 +225,70 @@
         Email: <?php echo $userEmail; ?>
     </div>
   </header>
+
   <div class="w3-content w3-container w3-padding-64" id="book-service">
-    <a href="requestservice.php" class="w3-button w3-jumbo">Book Service</a>
-    <a href="CustomerManageJobs.php" class="w3-button w3-jumbo">Manage Jobs</a>
-    <a href="CustomerMessageCenter.php" class="w3-button w3-jumbo">Message Center</a>
+    <a href="CustomerPage.php" class="w3-button">Back</a>
+    <h2>Message Center</h2>
   </div>
 
-  <div class="w3-content w3-container w3-padding-64" id="services">
-    <h3 class="w3-center">OUR SERVICES</h3>
-    <div class="w3-row">
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-television w3-margin-bottom w3-jumbo"></i>
-        <h4>TV Mounting</h4>
-        <p>We professionally mount your TV on the wall.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-        <h4>Plumbing</h4>
-        <p>We fix plumbing issues efficiently.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-bolt w3-margin-bottom w3-jumbo"></i>
-        <h4>Electrical Works</h4>
-        <p>Professional electrical services for your home.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-wrench w3-margin-bottom w3-jumbo"></i>
-        <h4>Handyman</h4>
-        <p>General handyman services for various tasks.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-leaf w3-margin-bottom w3-jumbo"></i>
-        <h4>Gardening</h4>
-        <p>Professional gardening and landscaping services.</p>
-      </div>
-      <div class="w3-col m4 w3-center w3-padding-large">
-        <i class="fa fa-snowflake-o w3-margin-bottom w3-jumbo"></i>
-        <h4>HVAC</h4>
-        <p>Heating, ventilation, and air conditioning services.</p>
-      </div>
-    </div>
-  </div>
+    <?php
+        $getJobs = $conn->prepare("SELECT 
+            cj.jobID, 
+            cj.jobTitle, 
+            cj.jobStatus, 
+            c.contractorName,
+            c.contractorEmail 
+            FROM 
+            customerJob cj
+            JOIN 
+            contractor c 
+            ON 
+            cj.contractorID = c.contractorID 
+            WHERE 
+            cj.customerID = ?;
+        ");
+        $getJobs->bind_param("i", $customerID);
+
+        if($getJobs->execute()){
+            $result = $getJobs->get_result();
+            $getJobs->close();
+
+            if($result->num_rows > 0) {
+                echo '<div class="w3-row">';
+                echo "<table border='1'>";
+                echo "<tr>
+                        <th>To/From</th>
+                        <th>Job Title</th>
+                        <th>Job Status</th>
+                        <th></th>
+                      </tr>";
+                
+                while($row = $result->fetch_assoc()) {
+                    $getConversationID = $conn->prepare("SELECT conversationID FROM conversations WHERE jobID=? AND customerEmail =? AND contractorEmail =?");
+                    $getConversationID->bind_param("iss", $row['jobID'], $userEmail, $row['contractorEmail']);
+                    $getConversationID->execute();
+                    $getID = $getConversationID->get_result();
+                    $getID = $getID->fetch_assoc();
+                    echo "<tr>
+                            <td>{$row['contractorName']}</td>
+                            <td>{$row['jobTitle']}</td>
+                            <td>{$row['jobStatus']}</td>
+                            <td><a href='customerConversation.php?id={$getID['conversationID']}'><button>Message</button></a></td>
+                          </tr>";
+                }
+                
+                echo "</table>";
+                echo "</div>";
+            } else {
+                echo "Nothing here but crickets!";
+            }
+            
+            $result->free();
+            $conn->close();
+        }
+        
+    ?>
+
 </body>
 
 </html>
