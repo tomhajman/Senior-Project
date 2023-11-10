@@ -1,5 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+    session_start();
+    include 'DBCredentials.php';
+    $userEmail = $_SESSION['contractorEmail'];
+    function connectToDB() {
+        global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+            $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+            
+            if ($conn->connect_error) {
+                die("Connection issue: ".$conn->connect_error);
+            }			
+        return $conn;
+    }
+
+    $conn = connectToDB();
+    $getContractorInfo = $conn->prepare("SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?");
+    $getContractorInfo->bind_param("s", $userEmail);
+
+    if ($getContractorInfo->execute()) {
+        $getContractorInfo->bind_result($userFName, $contractorID);
+        $getContractorInfo->fetch();
+    } else {
+        $userFName = "User";
+    }
+    $getContractorInfo->close();
+    
+
+?>	
 
 <head>
   <meta charset="UTF-8">
@@ -180,35 +209,6 @@
 </head>
 
 <body>
-  <?php
-
-		session_start();
-		include 'DBCredentials.php';
-		$userEmail = htmlspecialchars($_SESSION['contractorEmail']);
-		function connectToDB() {
-			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
-				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
-				
-				if ($conn->connect_error) {
-					die("Connection issue: ".$conn->connect_error);
-				}			
-			return $conn;
-		}
-
-		$conn = connectToDB();
-		$getContractorInfo = $conn->prepare("SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?");
-        $getContractorInfo->bind_param("s", $userEmail);
-
-		if ($getContractorInfo->execute()) {
-			$getContractorInfo->bind_result($userFName, $contractorID);
-            $getContractorInfo->fetch();
-		} else {
-			$userFName = "User";
-		}
-        $getContractorInfo->close();
-			
-		
-	?>	
   <header>
     <div class="dropdown">
         <button class="dropbtn">...</button>
@@ -232,23 +232,22 @@
   </div>
 
     <?php
-        $getJobs = $conn->prepare("SELECT 
-            cj.jobID, 
+        $getJobs = $conn->prepare("SELECT
             cj.jobTitle, 
             cj.jobStatus, 
-            c.customerFirstName,
-            c.customerLastName,
-            c.customerEmail 
-            FROM 
-            customerJob cj
-            JOIN 
-            customer c 
-            ON 
-            cj.customerID = c.customerID 
-            WHERE 
-            cj.contractorID = ?;
+            conv.conversationID, 
+            cust.customerFirstName,
+            cust.customerLastName
+          FROM 
+            conversations conv
+          JOIN 
+            customerJob cj ON conv.jobID = cj.jobID
+          JOIN 
+            customer cust ON cust.customerEmail = conv.customerEmail
+          WHERE 
+            conv.contractorEmail = ?;
         ");
-        $getJobs->bind_param("i", $contractorID);
+        $getJobs->bind_param("s", $userEmail);
 
         if($getJobs->execute()){
             $result = $getJobs->get_result();
@@ -265,16 +264,14 @@
                       </tr>";
                 
                 while($row = $result->fetch_assoc()) {
-                    $getConversationID = $conn->prepare("SELECT conversationID FROM conversations WHERE jobID=? AND contractorEmail =? AND customerEmail =?");
-                    $getConversationID->bind_param("iss", $row['jobID'], $userEmail, $row['customerEmail']);
-                    $getConversationID->execute();
-                    $getID = $getConversationID->get_result();
-                    $getID = $getID->fetch_assoc();
+                    $customerName = htmlspecialchars($row['customerFirstName'])." ".htmlspecialchars($row['customerLastName']);
+                    $title = htmlspecialchars($row['jobTitle']);
+                    $status = htmlspecialchars($row['jobStatus']);
                     echo "<tr>
-                            <td>{$row['customerFirstName']}&nbsp{$row['customerLastName']}</td>
-                            <td>{$row['jobTitle']}</td>
-                            <td>{$row['jobStatus']}</td>
-                            <td><a href='contractorConversation.php?id={$getID['conversationID']}'><button>Message</button></a></td>
+                            <td>{$customerName}</td>
+                            <td>{$title}</td>
+                            <td>{$status}</td>
+                            <td><a href='contractorConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>
                           </tr>";
                 }
                 

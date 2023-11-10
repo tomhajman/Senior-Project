@@ -23,7 +23,8 @@
 		} else {
 			$userName = "User";
 		}
-        $getContractorInfo->close();
+    $getContractorInfo->close();
+    $userName = htmlspecialchars($userName);
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
             $messageContent = htmlspecialchars($_POST['messageContent']);
@@ -337,7 +338,7 @@
         <div class="dropdown">
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
-                <a href="#">Messages</a>
+                <a href="ContractorMessageCenter.php">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
                 <a href="#">Job History</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>

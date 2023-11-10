@@ -2,7 +2,7 @@
 
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = htmlspecialchars($_SESSION['customerEmail']);
+		$userEmail = $_SESSION['customerEmail'];
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -24,9 +24,10 @@
 			$userFName = "User";
 		}
         $getCustomerInfo->close();
+        $userFName = htmlspecialchars($userFName);
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
-            $messageContent = htmlspecialchars($_POST['messageContent']);
+            $messageContent = $_POST['messageContent'];
             $sendMessage = $conn->prepare("INSERT INTO messages (content, conversationID, sender) VALUES (?, ?, ?)");
             $sendMessage->bind_param("sis", $messageContent, $_GET['id'], $userEmail);
             $sendMessage->execute();
@@ -39,7 +40,40 @@
         if(isset($_GET['id']) && is_numeric($_GET['id'])){
             $conversationID = $_GET['id'];
 
-            $getMessages = $conn->prepare("SELECT msgID, content, sender, sentAt FROM messages WHERE conversationID = $conversationID ORDER BY msgID");
+            $getMessages = $conn->prepare("-- First part: LEFT JOIN
+            SELECT 
+                m.msgID, 
+                m.content, 
+                m.sender, 
+                m.sentAt, 
+                c.contractorName
+            FROM 
+                messages m
+            LEFT JOIN 
+                contractor c 
+            ON 
+                m.sender = c.contractorEmail 
+            WHERE 
+                m.conversationID = $conversationID 
+            
+            UNION
+            
+            -- Second part: RIGHT JOIN
+            SELECT 
+                m.msgID, 
+                m.content, 
+                m.sender, 
+                m.sentAt, 
+                c.contractorName
+            FROM 
+                messages m
+            RIGHT JOIN 
+                contractor c 
+            ON 
+                m.sender = c.contractorEmail 
+            WHERE 
+                m.conversationID = $conversationID;
+            ");
             if($getMessages->execute()){
                 $result = $getMessages->get_result();
             }
@@ -310,8 +344,8 @@
         </div>
     </div>
     <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
+        Welcome, <?php echo htmlspecialchars($userFName); ?><br>
+        Email: <?php echo htmlspecialchars($userEmail); ?>
     </div>
   </header>
 
@@ -325,7 +359,6 @@
         <?php
             while($row = $result->fetch_assoc()){
                 $content = htmlspecialchars($row['content']);
-                $sender = htmlspecialchars($row['sender']);
                 $sentAt = $row['sentAt'];
                 $date = new DateTime($sentAt, new DateTimeZone('UTC')); // Assuming your timestamp is in UTC
 
@@ -343,6 +376,7 @@
                         {$content}
                     </div>";
                 } else {
+                    $sender = htmlspecialchars($row['contractorName']);
                     echo "<div class='message received'>
                         {$sender}<br>
                         {$formattedDate}<br>

@@ -1,5 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+  session_start();
+  include 'DBCredentials.php';
+  $userEmail = htmlspecialchars($_SESSION['customerEmail']);
+  function connectToDB() {
+    global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+      $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+      
+      if ($conn->connect_error) {
+        die("Connection issue: ".$conn->connect_error);
+      }			
+    return $conn;
+  }
+
+  $conn = connectToDB();
+  $getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
+      $getCustomerInfo->bind_param("s", $userEmail);
+
+  if ($getCustomerInfo->execute()) {
+    $getCustomerInfo->bind_result($userFName, $customerID);
+          $getCustomerInfo->fetch();
+  } else {
+    $userFName = "User";
+  }
+  $getCustomerInfo->close();
+  
+?>
 
 <head>
   <meta charset="UTF-8">
@@ -179,36 +207,7 @@
   </style>
 </head>
 
-<body>
-  <?php
-
-		session_start();
-		include 'DBCredentials.php';
-		$userEmail = htmlspecialchars($_SESSION['customerEmail']);
-		function connectToDB() {
-			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
-				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
-				
-				if ($conn->connect_error) {
-					die("Connection issue: ".$conn->connect_error);
-				}			
-			return $conn;
-		}
-
-		$conn = connectToDB();
-		$getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
-        $getCustomerInfo->bind_param("s", $userEmail);
-
-		if ($getCustomerInfo->execute()) {
-			$getCustomerInfo->bind_result($userFName, $customerID);
-            $getCustomerInfo->fetch();
-		} else {
-			$userFName = "User";
-		}
-        $getCustomerInfo->close();
-			
-		
-	?>	
+<body>	
   <header>
     <div class="dropdown">
         <button class="dropbtn">...</button>
@@ -232,19 +231,19 @@
   </div>
 
     <?php
-        $getJobs = $conn->prepare("SELECT 
-            cj.jobID, 
+        $getJobs = $conn->prepare("
+          SELECT 
             cj.jobTitle, 
             cj.jobStatus, 
-            c.contractorName,
-            c.contractorEmail 
-            FROM 
+            conv.conversationID, 
+            cont.contractorName
+          FROM 
             customerJob cj
-            JOIN 
-            contractor c 
-            ON 
-            cj.contractorID = c.contractorID 
-            WHERE 
+          JOIN 
+            conversations conv ON cj.jobID = conv.jobID
+          JOIN 
+            contractor cont ON conv.contractorEmail = cont.contractorEmail
+          WHERE 
             cj.customerID = ?;
         ");
         $getJobs->bind_param("i", $customerID);
@@ -264,16 +263,14 @@
                       </tr>";
                 
                 while($row = $result->fetch_assoc()) {
-                    $getConversationID = $conn->prepare("SELECT conversationID FROM conversations WHERE jobID=? AND customerEmail =? AND contractorEmail =?");
-                    $getConversationID->bind_param("iss", $row['jobID'], $userEmail, $row['contractorEmail']);
-                    $getConversationID->execute();
-                    $getID = $getConversationID->get_result();
-                    $getID = $getID->fetch_assoc();
+                    $contractorName = htmlspecialchars($row['contractorName']);
+                    $title = htmlspecialchars($row['jobTitle']);
+                    $status = htmlspecialchars($row['jobStatus']);
                     echo "<tr>
-                            <td>{$row['contractorName']}</td>
-                            <td>{$row['jobTitle']}</td>
-                            <td>{$row['jobStatus']}</td>
-                            <td><a href='customerConversation.php?id={$getID['conversationID']}'><button>Message</button></a></td>
+                            <td>{$contractorName}</td>
+                            <td>{$title}</td>
+                            <td>{$status}</td>
+                            <td><a href='customerConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>
                           </tr>";
                 }
                 
