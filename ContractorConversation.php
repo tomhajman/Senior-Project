@@ -2,7 +2,7 @@
 
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = htmlspecialchars($_SESSION['customerEmail']);
+		$userEmail = $_SESSION['contractorEmail'];
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -14,16 +14,16 @@
 		}
 
 		$conn = connectToDB();
-		$getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
-        $getCustomerInfo->bind_param("s", $userEmail);
+		$getContractorInfo = $conn->prepare("SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?");
+        $getContractorInfo->bind_param("s", $userEmail);
 
-		if ($getCustomerInfo->execute()) {
-			$getCustomerInfo->bind_result($userFName, $customerID);
-            $getCustomerInfo->fetch();
+		if ($getContractorInfo->execute()) {
+			$getContractorInfo->bind_result($userName, $contractorID);
+            $getContractorInfo->fetch();
 		} else {
-			$userFName = "User";
+			$userName = "User";
 		}
-        $getCustomerInfo->close();
+        $getContractorInfo->close();
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
             $messageContent = htmlspecialchars($_POST['messageContent']);
@@ -32,14 +32,49 @@
             $sendMessage->execute();
             $sendMessage->close();
 
-            header("Location: CustomerConversation.php?id={$_GET['id']}");
+            header("Location: ContractorConversation.php?id={$_GET['id']}");
             exit();
         }
 
         if(isset($_GET['id']) && is_numeric($_GET['id'])){
             $conversationID = $_GET['id'];
 
-            $getMessages = $conn->prepare("SELECT msgID, content, sender, sentAt FROM messages WHERE conversationID = $conversationID ORDER BY msgID");
+            $getMessages = $conn->prepare("-- First part: LEFT JOIN
+            SELECT 
+                m.msgID, 
+                m.content, 
+                m.sender, 
+                m.sentAt, 
+                c.customerFirstName, 
+                c.customerLastName 
+            FROM 
+                messages m
+            LEFT JOIN 
+                customer c 
+            ON 
+                m.sender = c.customerEmail 
+            WHERE 
+                m.conversationID = $conversationID 
+            
+            UNION
+            
+            -- Second part: RIGHT JOIN
+            SELECT 
+                m.msgID, 
+                m.content, 
+                m.sender, 
+                m.sentAt, 
+                c.customerFirstName, 
+                c.customerLastName 
+            FROM 
+                messages m
+            RIGHT JOIN 
+                customer c 
+            ON 
+                m.sender = c.customerEmail 
+            WHERE 
+                m.conversationID = $conversationID;
+            ");
             if($getMessages->execute()){
                 $result = $getMessages->get_result();
             }
@@ -298,25 +333,22 @@
 </head>
 
 <body>	
-  <header>
-    <div class="dropdown">
-        <button class="dropbtn">...</button>
-        <div class="dropdown-content">
-          <a href="#">Messages</a>
-          <a href="#">Service History</a>
-            <a href="#">View Contractors</a>
-            <a href="#">Account Settings</a>
-            <a href="CustomerLogin.php">Log Out</a>
+    <header>
+        <div class="dropdown">
+            <button class="dropbtn">...</button>
+            <div class="dropdown-content">
+                <a href="#">Messages</a>
+                <a href="AvailableJobs.php">Available Jobs</a>
+                <a href="#">Job History</a>
+                <a href="ContractorUpdatePage.php">Account Settings</a>
+                <a href="ContractorLogin.php">Log Out</a>
+            </div>
         </div>
-    </div>
-    <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
-    </div>
-  </header>
+		<div class="welcome-contractor">Welcome, <?php echo $userName; ?></div> 
+    </header>
 
   <div class="w3-content w3-container w3-padding-64" id="book-service">
-    <a href="CustomerMessageCenter.php" class="w3-button">Back</a>
+    <a href="ContractorMessageCenter.php" class="w3-button">Back</a>
     <h2>Conversation</h2>
   </div>
 
@@ -338,13 +370,14 @@
                 // Display the messages
                 if($row['sender'] == $userEmail){
                     echo "<div class='message sent'>
-                        {$userFName}<br>
+                        {$userName}<br>
                         {$formattedDate}<br>
                         {$content}
                     </div>";
                 } else {
+                    $customerName = htmlspecialchars($row['customerFirstName'])." ".htmlspecialchars($row['customerLastName']);
                     echo "<div class='message received'>
-                        {$sender}<br>
+                        {$customerName}<br>
                         {$formattedDate}<br>
                         {$content}
                     </div>";
