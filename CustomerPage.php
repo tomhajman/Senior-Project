@@ -212,7 +212,7 @@
         <div class="dropdown-content">
           <a href="#">Messages</a>
           <a href="#">Service History</a>
-            <a href="#">View Contractors</a>
+            <a href="Contractors.php">View Contractors</a>
             <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="CustomerLogin.php">Log Out</a>
         </div>

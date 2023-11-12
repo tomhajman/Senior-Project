@@ -185,10 +185,15 @@
 	} else {
 		echo "Error retrieving job info.";
 	}
+	
+	$_SESSION['jobTitle'] = $record['jobTitle']; 
+	$_SESSION['quoteJobID'] = $id;
+	
 	?>
 	
-	<form action="" method="post">
-		<button id="quote">Send Quote</button>
+	<form action="#" method="post">
+		<button id="quote" type="button" onclick="window.location.href = 'contractorQuote.php';">Send Quote</button>
+	
 		<button id="info">Request More Information</button>
 	</form>
 	

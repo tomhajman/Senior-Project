@@ -251,6 +251,7 @@
                         <th>Address</th>
                         <th>Urgency</th>
                         <th></th>
+						<th></th>
                       </tr>";
                 
                 while($row = $result->fetch_assoc()) {
@@ -265,6 +266,7 @@
                             <td>{$row['jobAddress']}</td>
                             <td>{$row['jobUrgency']}</td>
                             <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>
+							<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>
                           </tr>";
                 }
                 
