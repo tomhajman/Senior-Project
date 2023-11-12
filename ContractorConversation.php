@@ -27,7 +27,7 @@
     $userName = htmlspecialchars($userName);
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
-            $messageContent = htmlspecialchars($_POST['messageContent']);
+            $messageContent = $_POST['messageContent'];
             $sendMessage = $conn->prepare("INSERT INTO messages (content, conversationID, sender) VALUES (?, ?, ?)");
             $sendMessage->bind_param("sis", $messageContent, $_GET['id'], $userEmail);
             $sendMessage->execute();

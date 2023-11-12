@@ -160,11 +160,8 @@
             
             if(!(empty($_FILES['otherImages']['tmp_name']))){
             // Loop through each uploaded file using foreach
-            echo "condition ok<br>";
                 foreach ($_FILES['otherImages']['error'] as $i => $err) {
-                    echo "loop ok<br>";
                     if ($err == UPLOAD_ERR_OK) {
-                        echo "condition 2 ok<br>";
                     $imgFile = $_FILES['otherImages']['tmp_name'][$i];
                     $mimeType = mime_content_type($imgFile);
                     // Chceck if the image is of allowed type, if not - skip it

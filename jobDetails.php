@@ -188,13 +188,41 @@
 	
 	$_SESSION['jobTitle'] = $record['jobTitle']; 
 	$_SESSION['quoteJobID'] = $id;
+
+	if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
+		$jobIDforConversation = $_POST['jobIDforConversation'];
+		
+		$findConversation = $conn->prepare("SELECT * FROM conversations WHERE jobID=? AND contractorEmail=?");
+		$findConversation->bind_param("is", $jobIDforConversation, $userEmail);
+		if($findConversation->execute()){
+			$conversation = $findConversation->get_result();
+			$findConversation->close();
+			if($conversation->num_rows > 0){
+				$row = $conversation->fetch_assoc();
+				header("Location: ContractorConversation.php?id={$row['conversationID']}");
+				exit();
+			} else {
+				$createConversation = $conn->prepare("INSERT INTO conversations (customerEmail, contractorEmail, jobID) VALUES (?, ?, ?)");
+				$createConversation->bind_param("ssi", $record2['customerEmail'], $userEmail, $jobIDforConversation);
+				if($createConversation->execute()){
+					$lastInsertedId = mysqli_insert_id($conn);
+					header("Location: ContractorConversation.php?id={$lastInsertedId}");
+					exit();
+				} else {
+					echo "Something went wrong, try again later";
+				}
+			}
+		}
+	}
 	
 	?>
 	
 	<form action="#" method="post">
 		<button id="quote" type="button" onclick="window.location.href = 'contractorQuote.php';">Send Quote</button>
-	
-		<button id="info">Request More Information</button>
+	</form>
+	<form action="#" method="post">
+		<input type="hidden" name="jobIDforConversation" value=<?php echo "'{$id}'"; ?>>
+		<button type="submit" id="info">Request More Information</button>
 	</form>
 	
 </body>
