@@ -88,6 +88,7 @@
             $email = strtolower($_POST['email']);
             $password = $_POST['password'];
             $confirmPassword = $_POST['confirmPassword'];
+			$phoneNumber = $_POST['phone'];
             $options = isset($_POST['options']) ? serialize($_POST['options']) : [];
 			
 			// Hash the contractor's password
@@ -120,8 +121,8 @@
                 $conn = connectToDatabase();
 
                 // Insert the data into table
-                $stmt = $conn->prepare("INSERT INTO contractor (contractorName, contractorPhoneNumber, contractorEmail, contractorPassword, contractorExpertise) VALUES (?, ?, ?, ?)");
-                $stmt->bind_param("ssss", $companyName, $email, $hashedPassword, $options);
+                $stmt = $conn->prepare("INSERT INTO contractor (contractorName, contractorPhoneNumber, contractorEmail, contractorPassword, contractorExpertise) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $companyName, $phoneNumber, $email, $hashedPassword, $options);
         
                 if ($stmt->execute()) {
                     echo "New record created successfully";

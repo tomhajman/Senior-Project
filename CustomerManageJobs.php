@@ -244,6 +244,11 @@
       }
     }
 			
+	if (isset($_POST['markCompleted'])) {
+		$jobIDforStatus = $_POST['jobIDforStatus'];
+		$updateStatus = "UPDATE customerJob SET jobStatus = 'Completed' WHERE jobID = $jobIDforStatus";
+		$conn->query($updateStatus);
+	}
 		
 	?>	
   <header>
@@ -315,10 +320,18 @@
                                 echo "<td><form action='#' method='post'>
                                 <input type='hidden' name='jobIDforConversation' value='{$jobID}'>
                                 <button type='submit'>Message</button>
-                                </form></td>";
+                                </form>
+								<form action='#' method='post'>
+								<input type='hidden' name='jobIDforStatus' value='{$jobID}'>
+								<button type='submit' name='markCompleted'>End Job</button>
+								</form></td>";
                                 break;
                               case 'Completed':
                                 // Add connection to rating page
+								//Still need to add link to ratings here
+								echo "<td><form action='#' method='post'>
+								<button type='submit' name='rate'>Rate Work</button>
+								</form></td>";
                                 break;
                               default:
                                 break;

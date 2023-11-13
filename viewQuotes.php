@@ -62,7 +62,7 @@
 		
 		$conn = connectToDB();
 		if(isset($_GET['id']) && is_numeric($_GET['id'])) {
-			$stmt = $conn->prepare("SELECT contractorName, quotePrice, quoteDate, estimatedCompletionDate FROM jobQuote WHERE jobID = ?");
+			$stmt = $conn->prepare("SELECT quoteID, contractorName, quotePrice, quoteDate, estimatedCompletionDate FROM jobQuote WHERE jobID = ?");
 			$stmt->bind_param("i", $_GET['id']);
 			if(!($stmt->execute())){
 				die("Job with ID = {$_GET['id']} doesn't exist.");
@@ -87,7 +87,7 @@
 				echo '<li><b>Estimated Completion Date:</b> '.$row["estimatedCompletionDate"].'</li>';
 			    echo '<li class="w3-theme-l5 w3-padding-16">';
 			    echo '<button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> Message</button>';
-				echo '<button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> View Quote</button>';
+				echo '<a href="customerViewQuote.php?id='.$row["quoteID"].'"><button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> View Quote</button></a>';
 			    echo '</li>';
 			    echo '</ul>';
 			    echo '</div>';

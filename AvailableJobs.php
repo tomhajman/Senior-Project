@@ -93,7 +93,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 		//Fixed output to be in proper table format.
 		function allJobs() {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob";
+			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobStatus = 'Pending'";
 			$result = $db->query($getJobInfo);
 			
 			if (mysqli_num_rows($result) > 0) {
@@ -132,7 +132,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 		
 		function jobTypeFilter($filter) {
 			$db = connectToDB();
-			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType= '$filter'";
+			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType= '$filter' AND jobStatus = 'Pending'";
 			$result = $db->query($getJobInfo);
 			
 			if (mysqli_num_rows($result) > 0) {

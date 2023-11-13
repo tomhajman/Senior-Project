@@ -65,6 +65,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+			margin-bottom: 10px;
         }
 
         button:hover {
@@ -181,10 +182,10 @@
 		
 		if (empty($errors)) {
 			$db = connectToDB();
-			
+			$jobStatus = "Pending";
 			//Insert data to customerJob table
-			$stmt = $conn->prepare("INSERT INTO customerJob (customerID, jobTitle, jobDescription, jobType, customerLastName, jobCounty, jobCity, jobAddress, jobUrgency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$stmt->bind_param("isssssssi", $userID, $jobTitle, $jobDescription, $jobType, $userLName, $userCounty, $userCity, $userAddress, $jobUrgency);
+			$stmt = $conn->prepare("INSERT INTO customerJob (customerID, jobTitle, jobDescription, jobStatus, jobType, customerLastName, jobCounty, jobCity, jobAddress, jobUrgency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			$stmt->bind_param("issssssssi", $userID, $jobTitle, $jobDescription, $jobStatus, $jobType, $userLName, $userCounty, $userCity, $userAddress, $jobUrgency);
 			
 			if ($stmt->execute()) {
                 $lastInsertedId = mysqli_insert_id($conn);
@@ -285,6 +286,7 @@
             <input type="file" id="otherImages" name="otherImages[]" accept="image/*" multiple>
 
             <button type="submit">Submit Request</button>
+			<a href="CustomerPage.php">Return to Dashboard</a>
         </form>
     </div>
 </body>
