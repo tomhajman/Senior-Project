@@ -55,7 +55,7 @@
             ON 
                 m.sender = c.customerEmail 
             WHERE 
-                m.conversationID = $conversationID 
+                m.conversationID = ?
             
             UNION
             
@@ -74,12 +74,23 @@
             ON 
                 m.sender = c.customerEmail 
             WHERE 
-                m.conversationID = $conversationID;
+                m.conversationID = ?;
             ");
+            $getMessages->bind_param("ii", $conversationID, $conversationID);
             if($getMessages->execute()){
                 $result = $getMessages->get_result();
             }
             $getMessages->close();
+
+            $getJobTitle = $conn->prepare("SELECT jobTitle FROM customerJob cj JOIN conversations conv ON conv.jobID = cj.jobID WHERE conv.conversationID = ?");
+            $getJobTitle->bind_param("i", $conversationID);
+            if($getJobTitle->execute()){
+              $getJobTitle->bind_result($jobTitle);
+              $getJobTitle->fetch();
+            } else {
+              $jobTitle = "Error fetching job title.";
+            }
+            $getJobTitle->close();
         }
 			
 		
@@ -350,7 +361,8 @@
 
   <div class="w3-content w3-container w3-padding-64" id="book-service">
     <a href="ContractorMessageCenter.php" class="w3-button">Back</a>
-    <h2>Conversation</h2>
+    <h3>Conversation about:</h3>
+    <h4><?php echo htmlspecialchars($jobTitle) ?></h4>
   </div>
 
   <div class="main-content">

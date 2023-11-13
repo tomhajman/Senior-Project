@@ -205,7 +205,44 @@
 		} else {
 			$userFName = "User";
 		}
-        $getCustomerInfo->close();
+    $getCustomerInfo->close();
+
+    if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
+      $jobIDforConversation = $_POST['jobIDforConversation'];
+      
+      $findConversation = $conn->prepare("SELECT
+        conv.conversationID
+      FROM
+        conversations conv
+      JOIN
+        customerJob cj ON conv.jobID = cj.jobID
+      JOIN
+        contractor cont ON cj.contractorID = cont.contractorID
+      WHERE
+        cj.customerID=? AND cj.jobID=?;");
+      $findConversation->bind_param("ii", $customerID, $jobIDforConversation);
+      if($findConversation->execute()){
+        $conversation = $findConversation->get_result();
+        $findConversation->close();
+        if($conversation->num_rows > 0){
+          $result = $conversation->fetch_assoc();
+          header("Location: CustomerConversation.php?id={$result['conversationID']}");
+          exit();
+        } else {
+          $getContractorEmail = $conn->query("SELECT contractorEmail FROM contractor cont JOIN customerJob cj ON cj.contractorID = cont.contractorID WHERE cj.jobID=$jobIDforConversation");
+          $result = $getContractorEmail->fetch_assoc();
+          $createConversation = $conn->prepare("INSERT INTO conversations (customerEmail, contractorEmail, jobID) VALUES (?, ?, ?)");
+          $createConversation->bind_param("ssi", $userEmail, $result['contractorEmail'], $jobIDforConversation);
+          if($createConversation->execute()){
+            $lastInsertedId = mysqli_insert_id($conn);
+            header("Location: CustomerConversation.php?id={$lastInsertedId}");
+            exit();
+          } else {
+            echo "Something went wrong, try again later";
+          }
+        }
+      }
+    }
 			
 		
 	?>	
@@ -257,6 +294,7 @@
                 while($row = $result->fetch_assoc()) {
                     $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
                     $getID = $getCoverPicture->fetch_assoc();
+                    $jobID = $row['jobID'];
                     echo "<tr>
                             <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>
                             <td>{$row['jobTitle']}</td>
@@ -265,9 +303,28 @@
                             <td>{$row['jobCity']}</td>
                             <td>{$row['jobAddress']}</td>
                             <td>{$row['jobUrgency']}</td>
-                            <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>
-							<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>
-                          </tr>";
+                            <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>";
+							              
+                            // Display different buttons depending on status
+                            $status = $row['jobStatus'];
+                            switch($status){
+                              case 'Pending':
+                                echo "<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>";
+                                break;
+                              case 'In Progress':
+                                echo "<td><form action='#' method='post'>
+                                <input type='hidden' name='jobIDforConversation' value='{$jobID}'>
+                                <button type='submit'>Message</button>
+                                </form></td>";
+                                break;
+                              case 'Completed':
+                                // Add connection to rating page
+                                break;
+                              default:
+                                break;
+                            }
+                            
+                          echo "</tr>";
                 }
                 
                 echo "</table>";
