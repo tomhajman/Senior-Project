@@ -170,9 +170,11 @@
             $updateProfileQuery->bind_param("sssss", $contractorName, $contractorPhoneNumber, $contractorEmail, $contractorExpertise, $userEmail);
 
             if ($updateProfileQuery->execute()) {
-                echo "<div class='success-message'>Profile updated successfully</div>";
+            	 echo "<script>alert('Profile updated successfully.');</script>";
+                //echo "<div class='success-message'>Profile updated successfully</div>";
             } else {
-                echo "<div class='error-message'>Error updating profile</div>";
+             	echo "<script>alert('Error updating profile.');</script>";
+                //echo "<div class='error-message'>Error updating profile</div>";
             }
             $updateProfileQuery->close();
         }

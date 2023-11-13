@@ -125,8 +125,10 @@
                 $stmt->bind_param("sssss", $companyName, $phoneNumber, $email, $hashedPassword, $options);
         
                 if ($stmt->execute()) {
-                    echo "New record created successfully";
+                	echo "<script>alert('New record created successfully.');</script>";
+                    //echo "New record created successfully";
                 } else {
+                	echo "<script>alert('Error'" . $stmt->error);</script>";
                     echo "Error: " . $stmt->error;
                 }
         

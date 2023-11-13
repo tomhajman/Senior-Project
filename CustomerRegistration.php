@@ -172,9 +172,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssssssssss", $customerFirstName, $customerlastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerCounty, $customerEmail, $customerPhoneNumber, $hashedPassword);
 
         if ($stmt->execute()) {
-            echo "<div class='success'>New customer record created successfully</div>";
+        	echo "<script>alert('New customer created successfully.');</script>";
+            //echo "<div class='success'>New customer record created successfully</div>";
         } else {
-            echo "<div class='error'>Error: " . $stmt->error . "</div>";
+        	echo "<script>alert('Error.'". $stmt->error . ");</script>";
+            //echo "<div class='error'>Error: " . $stmt->error . "</div>";
         }
 
         $stmt->close();

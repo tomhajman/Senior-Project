@@ -225,7 +225,8 @@
                     $updateUserDataQuery->bind_param("sssssssssss", $customerFirstName, $customerLastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerCounty, $customerEmail, $customerPhoneNumber, $hashedNewPassword, $userEmail);
 
                     if ($updateUserDataQuery->execute()) {
-                        echo "<div class='success'>Profile updated successfully</div>";
+                        //echo "<div class='success'>Profile updated successfully</div>";
+                         echo "<script>alert('Profile updated successfully.');</script>";
 
                         // Fetch the updated user data
                         $getUserDataQuery = $conn->prepare("SELECT * FROM customer WHERE customerEmail = ?");
@@ -236,7 +237,8 @@
 
                         $getUserDataQuery->close();
                     } else {
-                        echo "<div class='error'>Error: " . $updateUserDataQuery->error . "</div>";
+                    	echo "<script>alert('Error: '".$updateUserDataQuery->error . ");</script>";
+                        //echo "<div class='error'>Error: " . $updateUserDataQuery->error . "</div>";
                     }
 
                     $updateUserDataQuery->close();

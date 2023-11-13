@@ -134,9 +134,11 @@
 			$stmt->bind_param("sssii", $jobTitle, $jobDescription, $jobType, $jobUrgency, $_GET['id']);
 			
 			if ($stmt->execute()) {
-				echo "Job updated successfully";
+			    echo "<script>alert('Job updated successfully.');</script>";
+				//echo "Job updated successfully";
 			} else {
-				echo "Error: " . $stmt->error;
+			    echo "<script>alert('Error'" . $stmt->error . ");</script>";
+				//echo "Error: " . $stmt->error;
 			}
 			$stmt->close();
 
