@@ -255,10 +255,11 @@
     <div class="dropdown">
         <button class="dropbtn">...</button>
         <div class="dropdown-content">
-          <a href="#">Messages</a>
-          <a href="#">Service History</a>
-            <a href="#">View Contractors</a>
-            <a href="#">Account Settings</a>
+			<a href="CustomerPage.php">Home</a>
+			<a href="CustomerMessageCenter.php">Messages</a>
+			<a href="#">Service History</a>
+            <a href="Contractors.php">View Contractors</a>
+            <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="CustomerLogin.php">Log Out</a>
         </div>
     </div>
@@ -277,14 +278,16 @@
         $getJobs = $conn->prepare("SELECT * FROM customerJob WHERE customerID = ?");
         $getJobs->bind_param("i", $customerID);
 
-        if($getJobs->execute()){
-            $result = $getJobs->get_result();
-            $getJobs->close();
+		if ($getJobs->execute()) {
+        $result = $getJobs->get_result();
+        $getJobs->close();
 
-            if($result->num_rows > 0) {
-                echo '<div class="w3-row">';
-                echo "<table border='1'>";
-                echo "<tr>
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+
+        if (!empty($rows)) {
+            echo '<div class="w3-row">';
+            echo "<table border='1'>";
+            echo "<tr>
                         <th></th>
                         <th>Title</th>
                         <th>Job Type</th>
@@ -295,12 +298,13 @@
                         <th></th>
 						<th></th>
                       </tr>";
-                
-                while($row = $result->fetch_assoc()) {
-                    $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
-                    $getID = $getCoverPicture->fetch_assoc();
-                    $jobID = $row['jobID'];
-                    echo "<tr>
+
+            foreach ($rows as $row) {
+                $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
+                $getID = $getCoverPicture->fetch_assoc();
+                $jobID = $row['jobID'];
+
+                echo "<tr>
                             <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>
                             <td>{$row['jobTitle']}</td>
                             <td>{$row['jobType']}</td>
@@ -309,49 +313,42 @@
                             <td>{$row['jobAddress']}</td>
                             <td>{$row['jobUrgency']}</td>
                             <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>";
-							              
-                            // Display different buttons depending on status
-                            $status = $row['jobStatus'];
-                            switch($status){
-                              case 'Pending':
-                                echo "<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>";
-                                break;
-                              case 'In Progress':
-                                echo "<td><form action='#' method='post'>
-                                <input type='hidden' name='jobIDforConversation' value='{$jobID}'>
-                                <button type='submit'>Message</button>
-                                </form>
-								<form action='#' method='post'>
-								<input type='hidden' name='jobIDforStatus' value='{$jobID}'>
-								<button type='submit' name='markCompleted'>End Job</button>
-								</form></td>";
-                                break;
-                              case 'Completed':
-                                // Add connection to rating page
-								//Still need to add link to ratings here
-								echo "<td><form action='#' method='post'>
-								<button type='submit' name='rate'>Rate Work</button>
-								</form></td>";
-                                break;
-                              default:
-                                break;
-                            }
-                            
-                          echo "</tr>";
-                }
-                
-                echo "</table>";
-                echo "</div>";
-            } else {
-                echo "Nothing here but crickets!";
-            }
-            
-            $result->free();
-            $conn->close();
-        }
-        
-    ?>
 
+                $status = $row['jobStatus'];
+                switch ($status) {
+                    case 'Pending':
+                        echo "<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>";
+                        break;
+                    case 'In Progress':
+                        echo "<td><form action='#' method='post'>
+                                    <input type='hidden' name='jobIDforConversation' value='{$jobID}'>
+                                    <button type='submit'>Message</button>
+                                  </form>
+                                  <form action='#' method='post'>
+                                    <input type='hidden' name='jobIDforStatus' value='{$jobID}'>
+                                    <button type='submit' name='markCompleted'>End Job</button>
+                                  </form></td>";
+                        break;
+                    case 'Completed':
+                        echo "<td><a href='ContractorRatings.php?jobID={$row['jobID']}'><button>Rate Work</button></a></td>";
+                        break;
+                    default:
+                        break;
+                }
+
+                echo "</tr>";
+            }
+
+            echo "</table>";
+            echo "</div>";
+        } else {
+            echo "Nothing here but crickets!";
+        }
+
+        $result->free();
+        $conn->close();
+    }
+    ?>
 </body>
 
 </html>

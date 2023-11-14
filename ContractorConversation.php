@@ -349,6 +349,7 @@
         <div class="dropdown">
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
+				<a href="ContractorPage.php">Home</a>
                 <a href="ContractorMessageCenter.php">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
                 <a href="#">Job History</a>
