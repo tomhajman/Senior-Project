@@ -1,3 +1,34 @@
+<?php
+// Start the session at the very beginning of the file
+session_start();
+
+include 'DBCredentials.php';
+$userEmail = $_SESSION['contractorEmail'] ?? '';
+
+function connectToDB() {
+    global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
+    $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
+
+    if ($conn->connect_error) {
+        die("Connection issue: " . $conn->connect_error);
+    }
+    return $conn;
+}
+
+$db = connectToDB();
+
+$getNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
+$result = $db->query($getNameQuery);
+
+if ($result) {
+    $row = $result->fetch_assoc();
+    $userName = $row['contractorName'];
+} else {
+    $userName = "Contractor";
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,13 +78,6 @@
             cursor: pointer;
         }
 
-        @media only screen and (max-device-width: 1600px) {
-            .bgimg-1, .bgimg-2, .bgimg-3 {
-                background-attachment: scroll;
-                min-height: 400px;
-            }
-        }
-
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
@@ -68,10 +92,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        h1 {
-            margin: 0;
         }
 
         .dropdown {
@@ -94,7 +114,6 @@
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             left: 0;
-            /* Start from the left */
             top: 100%;
             z-index: 1;
         }
@@ -105,7 +124,6 @@
             text-decoration: none;
             display: block;
             text-align: left;
-            /* Align the menu items to the left */
         }
 
         .dropdown-content a:hover {
@@ -118,6 +136,11 @@
 
         .dropdown:hover .dropbtn {
             background-color: #3e8e41;
+        }
+
+        .welcome-contractor {
+            margin-right: 10px;
+            margin-left: auto;
         }
 
         .w3-content {
@@ -143,12 +166,29 @@
             margin: 0;
         }
 
-        .welcome-contractor {
-            margin-right: 10px;
-            margin-left: auto;
+        .manage-jobs-button,
+        .available-jobs-button {
+            width: 48%;
+            margin-top: 20px;
+            display: inline-block;
         }
 
-        /* New styles for the left half of the body */
+        .manage-jobs-button a,
+        .available-jobs-button a {
+            font-size: 24px;
+            background-color: green;
+            padding: 5px 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .manage-jobs-button a:hover,
+        .available-jobs-button a:hover {
+            background-color: #3e8e41;
+        }
+
         .calendar-container,
         .recent-works-container {
             width: 48%;
@@ -198,35 +238,9 @@
             padding: 10px;
             margin-bottom: 10px;
         }
-
-       .manage-jobs-button,
-        .available-jobs-button {
-            width: 48%;
-            margin-top: 20px;
-            display: inline-block;
-        }
-
-        .manage-jobs-button a,
-        .available-jobs-button a {
-            font-size: 24px;
-            background-color: green;
-            padding: 5px 10px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            display: block;
-        }
-
-        .manage-jobs-button a:hover,
-        .available-jobs-button a:hover {
-            background-color: #3e8e41;
-        }
-
     </style>
 </head>
 <body>
-
-
     <header>
         <div class="dropdown">
             <button class="dropbtn">...</button>
@@ -234,11 +248,12 @@
                 <a href="#">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
                 <a href="#">Job History</a>
+                <a href="ViewContractorRatings.php">View Ratings</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>
-                <a href="seniorprojectContractorLogin.php">Log Out</a>
+                <a href="ContractorLogin.php">Log Out</a>
             </div>
         </div>
-        <div class="welcome-contractor">Welcome, <?php echo $userName; ?></div>
+        <div class="welcome-contractor">Welcome, <?php echo isset($userName) ? $userName : 'Contractor'; ?></div>
     </header>
 
     <div class="w3-content w3-container w3-padding-64">
@@ -254,7 +269,7 @@
         <div class="calendar-container">
             <div class="calendar">
                 <?php
-                    $month = date("n"); // Current month
+                   $month = date("n"); // Current month
                     $year = date("Y"); // Current year
 
                     function buildCalendar($month, $year) {
@@ -308,7 +323,7 @@
         <div class="recent-works-container">
             <div class="recent-works">
                 <h2>Recent Works</h2>
-                <?php
+              <?php
                     if (count($recentWorks) > 0) {
                         foreach ($recentWorks as $work) {
                             echo "<div class='recent-works-item'>";
@@ -326,6 +341,3 @@
     </div>
 </body>
 </html>
-
-
-
