@@ -98,6 +98,7 @@
     session_start();
     include 'DBCredentials.php';
     $userEmail = $_SESSION['customerEmail'];
+    $customerID = $_SESSION['customerID'];
 
     function connectToDB()
     {
@@ -109,44 +110,52 @@
         }
         return $conn;
     }
+    $db = connectToDB();
 
-    function saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $customerEmail)
+    function saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID)
     {
         $db = connectToDB();
-
         // Insert the ratings into the database
-        $insertRatingQuery = "INSERT INTO ratings (QualityRating, CommunicationRating, TimelinessRating, PriceRating, ContractorID, CustomerEmail)
-                            VALUES ('$qualityRating', '$communicationRating', '$timelinessRating', '$priceRating', '$contractorID', '$customerEmail')";
+        $insertRatingQuery = "INSERT INTO rating (qualityRating, communicationRating, timelinessRating, priceRating, contractorID, jobID)
+                            VALUES ('$qualityRating', '$communicationRating', '$timelinessRating', '$priceRating', '$contractorID', $jobID)";
         $db->query($insertRatingQuery);
 
         // Calculate the average rating
-        $averageRating = ($qualityRating + $communicationRating + $timelinessRating + $priceRating) / 4;
+        $getRatings = $db->query("SELECT AVG(qualityRating) AS averageQuality, AVG(communicationRating) AS averageCommunication, AVG(timelinessRating) AS averageTimeliness, AVG(priceRating) AS averagePrice FROM rating WHERE contractorID = $contractorID");
+        if($getRatings){
+            $row = $getRatings->fetch_assoc();
+            $averageRating = ($row['averageQuality'] + $row['averageCommunication'] + $row['averageTimeliness'] + $row['averagePrice']) / 4;
+            // Update the contractor's overall rating
+            $updateContractorRatingQuery = "UPDATE contractor SET ContractorRating = '$averageRating' WHERE ContractorID = '$contractorID'";
+            $db->query($updateContractorRatingQuery);
+        } else {
+            die("Database error: " . $db->connect_error);
+        }
 
-        // Update the contractor's overall rating
-        $updateContractorRatingQuery = "UPDATE contractors SET ContractorRating = '$averageRating' WHERE ContractorID = '$contractorID'";
-        $db->query($updateContractorRatingQuery);
-
-        $db->close();
+        
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $qualityRating = $_POST['qualityRating'];
-        $communicationRating = $_POST['communicationRating'];
-        $timelinessRating = $_POST['timelinessRating'];
-        $priceRating = $_POST['priceRating'];
+        if(isset($_GET['jobID']) && is_numeric($_GET['jobID'])){
+            $jobID = $_GET['jobID'];
+            $qualityRating = $_POST['qualityRating'];
+            $communicationRating = $_POST['communicationRating'];
+            $timelinessRating = $_POST['timelinessRating'];
+            $priceRating = $_POST['priceRating'];
 
-        // Fetch the job and contractor information from the database
-        $getJobInfoQuery = "SELECT jq.ContractorID
-                            FROM JobQuote jq
-                            WHERE jq.CustomerEmail = '$userEmail'";
-        $jobInfoResult = $db->query($getJobInfoQuery);
+            // Fetch the job and contractor information from the database
+            $getJobInfoQuery = "SELECT ContractorID
+                                FROM customerJob
+                                WHERE jobID = $jobID";
+            $jobInfoResult = $db->query($getJobInfoQuery);
 
-        if ($jobInfoResult) {
-            $jobInfoRow = $jobInfoResult->fetch_assoc();
-            $contractorID = $jobInfoRow['ContractorID'];
+            if ($jobInfoResult) {
+                $jobInfoRow = $jobInfoResult->fetch_assoc();
+                $contractorID = $jobInfoRow['ContractorID'];
 
-            // Save the ratings to the database
-            saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $userEmail);
+                // Save the ratings to the database
+                saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID);
+            }
         }
     }
 
@@ -165,13 +174,13 @@
             </div>
         </div>
         <div class="welcome-user">
-            Welcome, <?php echo $userFName; ?><br>
-            Email: <?php echo $userEmail; ?>
+            Welcome, <?php echo htmlspecialchars($customerID); ?><br>
+            Email: <?php echo htmlspecialchars($userEmail); ?>
         </div>
     </header>
     <div class="centered-content">
         <div class="card">
-            <h2>How would you rate <?php echo $contractorName; ?>?</h2>
+            <h2>How would you rate this contractor?</h2>
             Quality of Work:
             <div class="stars" id="qualityStars">
                 <span class="fa fa-star"></span>
@@ -208,7 +217,7 @@
                 <span class="fa fa-star"></span>
             </div>
             <br>
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <form method="post" action="#">
                 <input type="hidden" name="qualityRating" id="qualityRating" value="0">
                 <input type="hidden" name="communicationRating" id="communicationRating" value="0">
                 <input type="hidden" name="timelinessRating" id="timelinessRating" value="0">

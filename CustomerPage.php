@@ -195,11 +195,13 @@
 			return $conn;
 		}
 		$db = connectToDB();
-		$getFNameQuery = "SELECT customerFirstName FROM customer WHERE customerEmail = '$userEmail'";
+		$getFNameQuery = "SELECT customerFirstName, customerID FROM customer WHERE customerEmail = '$userEmail'";
 		$result = $db->query($getFNameQuery);
 		if ($result) {
 			$row = $result->fetch_assoc();
 			$userFName = $row['customerFirstName'];
+      $customerID = $row['customerID'];
+      $_SESSION['customerID'] = $customerID;
 		} else {
 			$userFName = "User";
 		}
