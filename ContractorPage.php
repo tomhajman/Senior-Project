@@ -245,7 +245,7 @@ if ($result) {
         <div class="dropdown">
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
-                <a href="#">Messages</a>
+                <a href="ContractorMessageCenter.php">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
                 <a href="#">Job History</a>
                 <a href="ViewContractorRatings.php">View Ratings</a>
@@ -323,7 +323,7 @@ if ($result) {
         <div class="recent-works-container">
             <div class="recent-works">
                 <h2>Recent Works</h2>
-              <?php
+              <?php /*
                     if (count($recentWorks) > 0) {
                         foreach ($recentWorks as $work) {
                             echo "<div class='recent-works-item'>";
@@ -334,7 +334,7 @@ if ($result) {
                         }
                     } else {
                         echo "<p>No recent jobs.</p>";
-                    }
+                    }*/
                 ?>
             </div>
         </div>

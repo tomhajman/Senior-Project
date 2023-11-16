@@ -144,7 +144,7 @@
         $userName = "Contractor";
     }
 
-    $getContractorNameQuery = "SELECT contractorName FROM contractors WHERE contractorEmail = '$userEmail'";
+    $getContractorNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
     $contractorResult = $db->query($getContractorNameQuery);
     if ($contractorResult) {
         $contractorRow = $contractorResult->fetch_assoc();
@@ -155,12 +155,12 @@
 
     function getOverallAverageRating($db, $contractorEmail)
     {
-        $overallAvgQuery = "SELECT AVG(rating) AS overall_average FROM rating WHERE contractorID = (SELECT contractorID FROM contractors WHERE contractorEmail = '$contractorEmail')";
+        $overallAvgQuery = "SELECT contractorRating FROM contractor WHERE contractorEmail = '$contractorEmail')";
         $result = $db->query($overallAvgQuery);
 
         if ($result && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $averageRating = $row['overall_average'];
+            $averageRating = $row['contractorRating'];
             // Convert numeric rating to stars
             $stars = str_repeat('<span class="fa fa-star checked"></span>', round($averageRating));
             return $stars;

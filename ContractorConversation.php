@@ -24,7 +24,6 @@
 			$userName = "User";
 		}
     $getContractorInfo->close();
-    $userName = htmlspecialchars($userName);
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
             $messageContent = $_POST['messageContent'];
@@ -39,6 +38,9 @@
 
         if(isset($_GET['id']) && is_numeric($_GET['id'])){
             $conversationID = $_GET['id'];
+
+            // Mark messages as read
+            markMessagesAsRead($conversationID, $userEmail);
 
             $getMessages = $conn->prepare("-- First part: LEFT JOIN
             SELECT 
@@ -91,7 +93,16 @@
               $jobTitle = "Error fetching job title.";
             }
             $getJobTitle->close();
-        }
+          }
+          function markMessagesAsRead($conversationID, $userEmail) {
+            global $conn;
+        
+            $query = "UPDATE messages SET isRead = true WHERE conversationID = ? AND isRead = false AND sender != ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("is", $conversationID, $userEmail);
+            $stmt->execute();
+            $stmt->close();
+          }
 			
 		
 ?>
@@ -357,7 +368,7 @@
                 <a href="ContractorLogin.php">Log Out</a>
             </div>
         </div>
-		<div class="welcome-contractor">Welcome, <?php echo $userName; ?></div> 
+		<div class="welcome-contractor">Welcome, <?php echo htmlspecialchars($userName); ?></div> 
     </header>
 
   <div class="w3-content w3-container w3-padding-64" id="book-service">

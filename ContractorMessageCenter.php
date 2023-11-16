@@ -237,17 +237,22 @@
             cj.jobStatus, 
             conv.conversationID, 
             cust.customerFirstName,
-            cust.customerLastName
+            cust.customerLastName,
+            COUNT(CASE WHEN msg.isRead = false AND msg.sender != ? THEN 1 ELSE NULL END) AS unreadMessagesCount
           FROM 
             conversations conv
           JOIN 
             customerJob cj ON conv.jobID = cj.jobID
           JOIN 
             customer cust ON cust.customerEmail = conv.customerEmail
+          LEFT JOIN
+            messages msg ON conv.conversationID = msg.conversationID
           WHERE 
-            conv.contractorEmail = ?;
+            conv.contractorEmail = ?
+          GROUP BY
+            conv.conversationID;
         ");
-        $getJobs->bind_param("s", $userEmail);
+        $getJobs->bind_param("ss", $userEmail, $userEmail);
 
         if($getJobs->execute()){
             $result = $getJobs->get_result();
@@ -261,18 +266,23 @@
                         <th>Job Title</th>
                         <th>Job Status</th>
                         <th></th>
+                        <th></th>
                       </tr>";
                 
                 while($row = $result->fetch_assoc()) {
                     $customerName = htmlspecialchars($row['customerFirstName'])." ".htmlspecialchars($row['customerLastName']);
                     $title = htmlspecialchars($row['jobTitle']);
                     $status = htmlspecialchars($row['jobStatus']);
-                    echo "<tr>
-                            <td>{$customerName}</td>
+                    $unreadMessagesCount = $row['unreadMessagesCount'];
+                    echo "<tr". ($unreadMessagesCount > 0 ? " style='font-weight: bold;'" : "") .">";
+                    echo "<td>{$customerName}</td>
                             <td>{$title}</td>
                             <td>{$status}</td>
-                            <td><a href='contractorConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>
-                          </tr>";
+                            <td><a href='contractorConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
+                    if ($unreadMessagesCount > 0) {
+                      echo "<td>New Message(s)</td>";
+                    } 
+                    echo "</tr>";
                 }
                 
                 echo "</table>";

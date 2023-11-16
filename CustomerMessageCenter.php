@@ -4,7 +4,7 @@
 
   session_start();
   include 'DBCredentials.php';
-  $userEmail = htmlspecialchars($_SESSION['customerEmail']);
+  $userEmail = $_SESSION['customerEmail'];
   function connectToDB() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
       $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -221,8 +221,8 @@
         </div>
     </div>
     <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
+        Welcome, <?php echo htmlspecialchars($userFName); ?><br>
+        Email: <?php echo htmlspecialchars($userEmail); ?>
     </div>
   </header>
 
@@ -237,17 +237,22 @@
             cj.jobTitle, 
             cj.jobStatus, 
             conv.conversationID, 
-            cont.contractorName
+            cont.contractorName,
+            COUNT(CASE WHEN msg.isRead = false AND msg.sender != ? THEN 1 ELSE NULL END) AS unreadMessagesCount
           FROM 
             customerJob cj
           JOIN 
             conversations conv ON cj.jobID = conv.jobID
           JOIN 
             contractor cont ON conv.contractorEmail = cont.contractorEmail
+          LEFT JOIN
+            messages msg ON conv.conversationID = msg.conversationID
           WHERE 
-            cj.customerID = ?;
+            cj.customerID = ?
+          GROUP BY
+            conv.conversationID;
         ");
-        $getJobs->bind_param("i", $customerID);
+        $getJobs->bind_param("si", $userEmail, $customerID);
 
         if($getJobs->execute()){
             $result = $getJobs->get_result();
@@ -261,18 +266,23 @@
                         <th>Job Title</th>
                         <th>Job Status</th>
                         <th></th>
+                        <th></th>
                       </tr>";
                 
                 while($row = $result->fetch_assoc()) {
                     $contractorName = htmlspecialchars($row['contractorName']);
                     $title = htmlspecialchars($row['jobTitle']);
                     $status = htmlspecialchars($row['jobStatus']);
-                    echo "<tr>
-                            <td>{$contractorName}</td>
-                            <td>{$title}</td>
-                            <td>{$status}</td>
-                            <td><a href='customerConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>
-                          </tr>";
+                    $unreadMessagesCount = $row['unreadMessagesCount'];
+                    echo "<tr". ($unreadMessagesCount > 0 ? " style='font-weight: bold;'" : "") .">";
+                    echo "<td>{$contractorName}</td>
+                          <td>{$title}</td>
+                          <td>{$status}</td>
+                          <td><a href='customerConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
+                    if ($unreadMessagesCount > 0) {
+                      echo "<td>New Message(s)</td>";
+                    }           
+                    echo "</tr>";
                 }
                 
                 echo "</table>";
