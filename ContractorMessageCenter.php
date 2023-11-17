@@ -221,8 +221,8 @@
         </div>
     </div>
     <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
+        Welcome, <?php echo htmlspecialchars($userFName); ?><br>
+        Email: <?php echo htmlspecialchars($userEmail); ?>
     </div>
   </header>
 

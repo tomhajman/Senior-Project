@@ -27,6 +27,20 @@ if ($result) {
     $userName = "Contractor";
 }
 
+$getUnreadMessagesCount = $db->prepare("SELECT COUNT(*) AS unreadCount
+    FROM messages 
+    WHERE conversationID IN (
+        SELECT conversationID 
+        FROM conversations 
+        WHERE contractorEmail = ?
+    ) AND sender != ? AND isRead = false;");
+$getUnreadMessagesCount->bind_param("ss", $userEmail, $userEmail);
+if($getUnreadMessagesCount->execute()){
+$result = $getUnreadMessagesCount->get_result();
+$row = $result->fetch_assoc();
+$unreadCount = $row['unreadCount'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -238,6 +252,13 @@ if ($result) {
             padding: 10px;
             margin-bottom: 10px;
         }
+
+        .message-notification {
+            font-size: 30px;
+            font-weight: bold;
+            justify-content: center;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -257,6 +278,9 @@ if ($result) {
     </header>
 
     <div class="w3-content w3-container w3-padding-64">
+        <?php if ($unreadCount > 0): ?>
+        <div class="message-notification"><?php echo "$unreadCount unread message(s) - "; ?><a href='ContractorMessageCenter.php'>Click to view</a></div>
+        <?php endif; ?>
         <div class="w3-row">
             <div class="w3-col manage-jobs-button">
                 <a href="ContractorManageJobs.php" class="w3-button w3-jumbo">Manage Jobs</a>

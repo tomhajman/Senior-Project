@@ -176,6 +176,24 @@
     .w3-col p {
       margin: 0;
     }
+
+  .message-center-link {
+    position: relative;
+    display: inline-block;
+  }
+
+  .notification-circle {
+    background-color: yellow;
+    color: black;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 1.75em;
+    position: absolute;
+    top: -10px; /* Adjust based on actual layout */
+    right: -10px; /* Adjust based on actual layout */
+    border: 2px solid #fff; /* To make it stand out against any background */
+  }
+
   </style>
 </head>
 
@@ -205,6 +223,21 @@
 		} else {
 			$userFName = "User";
 		}
+
+    $getUnreadMessagesCount = $db->prepare("SELECT COUNT(*) AS unreadCount
+      FROM messages 
+      WHERE conversationID IN (
+          SELECT conversationID 
+          FROM conversations 
+          WHERE customerEmail = ?
+      ) AND sender != ? AND isRead = false;");
+    $getUnreadMessagesCount->bind_param("ss", $userEmail, $userEmail);
+    if($getUnreadMessagesCount->execute()){
+      $result = $getUnreadMessagesCount->get_result();
+      $row = $result->fetch_assoc();
+      $unreadCount = $row['unreadCount'];
+    }
+
 			
 		
 	?>	
@@ -220,15 +253,21 @@
         </div>
     </div>
     <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
+        Welcome, <?php echo htmlspecialchars($userFName); ?><br>
+        Email: <?php echo htmlspecialchars($userEmail); ?>
     </div>
   </header>
   <div class="w3-content w3-container w3-padding-64" id="book-service">
     <a href="requestservice.php" class="w3-button w3-jumbo">Book Service</a>
     <a href="CustomerManageJobs.php" class="w3-button w3-jumbo">Manage Jobs</a>
-    <a href="CustomerMessageCenter.php" class="w3-button w3-jumbo">Message Center</a>
-  </div>
+    <div class="message-center-link">
+        <a href="CustomerMessageCenter.php" class="w3-button w3-jumbo">Message Center</a>
+        <?php if ($unreadCount > 0): ?>
+            <span class="notification-circle"><?php echo $unreadCount; ?></span>
+        <?php endif; ?>
+    </div>
+</div>
+
 
   <div class="w3-content w3-container w3-padding-64" id="services">
     <h3 class="w3-center">OUR SERVICES</h3>
