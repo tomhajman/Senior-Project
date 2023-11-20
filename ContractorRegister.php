@@ -128,7 +128,7 @@
                 	echo "<script>alert('New record created successfully.');</script>";
                     //echo "New record created successfully";
                 } else {
-                	echo "<script>alert('Error'" . $stmt->error);</script>";
+                	echo "<script>alert('Error: " . $stmt->error . "');</script>";
                     echo "Error: " . $stmt->error;
                 }
         
