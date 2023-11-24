@@ -1,114 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-		header {
-            background-color: #333;
-            color: #fff;
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .dropdown {
-            position: absolute;
-            left: 0;
-        }
-
-        .dropbtn {
-            background-color: #333;
-            color: #fff;
-            padding: 16px;
-            font-size: 24px;
-            border: none;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #333;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            left: 0;
-            top: 100%;
-            z-index: 1;
-            text-align: left;
-        }
-
-        .dropdown-content a {
-            color: gray;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .dropdown:hover .dropbtn {
-            background-color: #3e8e41;
-        }
-
-        .welcome-user {
-            margin-right: 10px;
-            margin-left: auto;
-        }
-
-
-        .centered-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f2f2f2;
-        }
-
-        .card {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        }
-
-        .stars {
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .stars .fa-star.checked {
-            color: orange;
-        }
-
-        .submit-button {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        #thankYouMessage {
-            color: #3e8e41;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
 <?php
 session_start();
 include 'DBCredentials.php';
@@ -140,46 +29,67 @@ if ($result) {
     $userFName = "User";
 }
 
-function getCustomerID($db, $userEmail)
-{
-    $getCustomerIDQuery = "SELECT customerID FROM customer WHERE customerEmail = ?";
-    $stmt = $db->prepare($getCustomerIDQuery);
-    $stmt->bind_param("s", $userEmail);
-    $stmt->execute();
-    $result = $stmt->get_result();
+$jobID = isset($_GET['jobID']) ? $_GET['jobID'] : null;
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['customerID'];
+$checkRatingQuery = "SELECT * FROM rating WHERE jobID = ? AND customerID = ?";
+// Moved outside of the if statement
+$stmtCheckRating = $db->prepare($checkRatingQuery);
+$stmtCheckRating->bind_param("ii", $jobID, $_SESSION['customerID']);
+$stmtCheckRating->execute();
+$resultCheckRating = $stmtCheckRating->get_result();
+
+if ($resultCheckRating) {
+    $rowCheckRating = $resultCheckRating->fetch_assoc();
+
+    if (!empty($rowCheckRating)) {
+        $prefilledQualityRating = $rowCheckRating['qualityRating'];
+        $prefilledCommunicationRating = $rowCheckRating['communicationRating'];
+        $prefilledTimelinessRating = $rowCheckRating['timelinessRating'];
+        $prefilledPriceRating = $rowCheckRating['priceRating'];
     } else {
-        return null;
+        $prefilledQualityRating = 0;
+        $prefilledCommunicationRating = 0;
+        $prefilledTimelinessRating = 0;
+        $prefilledPriceRating = 0;
     }
+} else {
+    $prefilledQualityRating = 0;
+    $prefilledCommunicationRating = 0;
+    $prefilledTimelinessRating = 0;
+    $prefilledPriceRating = 0;
 }
 
-$customerID = getCustomerID($db, $userEmail);
-
-function saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID)
+function saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID, $customerID)
 {
-    global $db;
-    // Insert the ratings into the database using prepared statement with bind parameters
-    $insertRatingQuery = "INSERT INTO rating (qualityRating, communicationRating, timelinessRating, priceRating, contractorID, jobID)
-                        VALUES (?, ?, ?, ?, ?, ?)";
+    global $db, $checkRatingQuery;
+    $insertRatingQuery = "INSERT INTO rating (qualityRating, communicationRating, timelinessRating, priceRating, contractorID, jobID, customerID)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $db->prepare($insertRatingQuery);
 
     if ($stmt === false) {
         die('Error preparing statement: ' . $db->error);
     }
 
-    $stmt->bind_param("iiiiii", $qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID);
+    $stmt->bind_param("iiiiiii", $qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID, $customerID);
 
     if ($stmt->execute()) {
-        // Ratings saved successfully
-        return true;
-    } else {
-        // Error occurred while saving ratings
-        echo 'Error: ' . $stmt->error; // Print the error message for debugging
-        return false;
+        // Fetch the updated ratings
+        $stmt->close();
+        $stmtCheckRating = $db->prepare($checkRatingQuery);
+        $stmtCheckRating->bind_param("ii", $jobID, $_SESSION['customerID']);
+        $stmtCheckRating->execute();
+        $resultCheckRating = $stmtCheckRating->get_result();
+
+        if ($resultCheckRating) {
+            $row = $resultCheckRating->fetch_assoc();
+
+            if (!empty($row)) {
+                return $row;
+            }
+        }
     }
+
+    return false;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -190,24 +100,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $timelinessRating = $_POST['timelinessRating'];
         $priceRating = $_POST['priceRating'];
 
-        // Fetch the job and contractor information from the database
-        $getJobInfoQuery = "SELECT ContractorID FROM customerJob WHERE jobID = ?";
+        $getJobInfoQuery = "SELECT ContractorID, customerID FROM customerJob WHERE jobID = ?";
         $stmt = $db->prepare($getJobInfoQuery);
         $stmt->bind_param("i", $jobID);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
+        if ($result) {
             $jobInfoRow = $result->fetch_assoc();
-            $contractorID = $jobInfoRow['ContractorID'];
 
-            // Save the ratings to the database
-            if (saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID)) {
-                // Display a thank you message
-                echo '<script>displayThankYouMessage();</script>';
-            } else {
-                // Handle error if ratings couldn't be saved
-                echo '<script>alert("Error: Unable to save ratings.");</script>';
+            if (!empty($jobInfoRow)) {
+                $contractorID = $jobInfoRow['ContractorID'];
+                $customerID = $jobInfoRow['customerID'];
+
+                $row = saveRating($qualityRating, $communicationRating, $timelinessRating, $priceRating, $contractorID, $jobID, $customerID);
+
+                if ($row) {
+                    $prefilledQualityRating = $row['qualityRating'];
+                    $prefilledCommunicationRating = $row['communicationRating'];
+                    $prefilledTimelinessRating = $row['timelinessRating'];
+                    $prefilledPriceRating = $row['priceRating'];
+                } else {
+                    echo '<script>alert("Error: Unable to save ratings.");</script>';
+                }
             }
         }
     }
@@ -215,26 +130,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $db->close();
 ?>
-<!-- The rest of your HTML code remains unchanged -->
 
-   <header>
-    <div class="dropdown">
-        <button class="dropbtn">...</button>
-        <div class="dropdown-content">
-			<a href="CustomerPage.php">Home</a>
-			<a href="CustomerMessageCenter.php">Messages</a>
-			<a href="#">Service History</a>
-            <a href="Contractors.php">View Contractors</a>
-            <a href="CustomerUpdatePage.php">Account Settings</a>
-            <a href="CustomerLogin.php">Log Out</a>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/ratings.css">
+</head>
+
+<body>
+    <header>
+        <div class="dropdown">
+            <button class="dropbtn">...</button>
+            <div class="dropdown-content">
+                <a href="CustomerPage.php">Home</a>
+                <a href="CustomerMessageCenter.php">Messages</a>
+                <a href="#">Service History</a>
+                <a href="Contractors.php">View Contractors</a>
+                <a href="CustomerUpdatePage.php">Account Settings</a>
+                <a href="CustomerLogin.php">Log Out</a>
+            </div>
         </div>
-    </div>
-    <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
-    </div>
-  </header>
-
+        <div class="welcome-user">
+            Welcome, <?php echo $userFName; ?><br>
+            Email: <?php echo $userEmail; ?>
+        </div>
+    </header>
 
     <div class="centered-content">
         <div class="card">
@@ -245,10 +169,7 @@ $db->close();
                     <span class="fa fa-star" onclick="rateStar('qualityStars', <?php echo $i; ?>)"></span>
                 <?php endfor; ?>
             </div>
-            <br>
-
-            <!-- Repeat similar sections for other rating criteria -->
-            <!-- Communication -->
+            <br>        
             Communication:
             <div class="stars" id="communicationStars">
                 <?php for ($i = 1; $i <= 5; $i++) : ?>
@@ -257,7 +178,6 @@ $db->close();
             </div>
             <br>
 
-            <!-- Timeliness -->
             Timeliness:
             <div class="stars" id="timelinessStars">
                 <?php for ($i = 1; $i <= 5; $i++) : ?>
@@ -266,7 +186,6 @@ $db->close();
             </div>
             <br>
 
-            <!-- Price -->
             Price:
             <div class="stars" id="priceStars">
                 <?php for ($i = 1; $i <= 5; $i++) : ?>
@@ -284,12 +203,12 @@ $db->close();
                 <input type="button" value="Submit" onclick="submitRating()" class="submit-button">
             </form>
 
-            <div id="thankYouMessage"></div>
+             <div id="thankYouMessage"></div>
         </div>
     </div>
 
-    <script>
-        function rateStar(starSetId, rating) {
+<script>
+  function rateStar(starSetId, rating) {
             const starSet = document.getElementById(starSetId);
             const stars = starSet.getElementsByClassName('fa-star');
 
@@ -304,15 +223,17 @@ $db->close();
 
             // Set the corresponding hidden input field value
             const ratingInput = document.getElementById(starSetId.replace('Stars', 'Rating'));
-            ratingInput.value = rating;
+            if (ratingInput) {
+                ratingInput.value = rating;
+            }
         }
 
         function submitRating() {
             // Validate ratings for all criteria
-            const qualityRating = document.getElementById('qualityRating').value;
-            const communicationRating = document.getElementById('communicationRating').value;
-            const timelinessRating = document.getElementById('timelinessRating').value;
-            const priceRating = document.getElementById('priceRating').value;
+            const qualityRating = document.getElementById('qualityRating') ? document.getElementById('qualityRating').value : 0;
+            const communicationRating = document.getElementById('communicationRating') ? document.getElementById('communicationRating').value : 0;
+            const timelinessRating = document.getElementById('timelinessRating') ? document.getElementById('timelinessRating').value : 0;
+            const priceRating = document.getElementById('priceRating') ? document.getElementById('priceRating').value : 0;
 
             if (qualityRating === '0' || communicationRating === '0' || timelinessRating === '0' || priceRating === '0') {
                 alert('Please rate all criteria before submitting.');
@@ -321,16 +242,39 @@ $db->close();
 
             // Additional validation logic if needed
 
+            // Display thank-you message
+            displayThankYouMessage();
+
             // Submit the form
             document.forms[0].submit();
         }
 
         function displayThankYouMessage() {
             const thankYouMessage = document.getElementById('thankYouMessage');
-            thankYouMessage.textContent = 'Thank you for your rating';
-            thankYouMessage.style.color = '#3e8e41'; // Set color to green
+            if (thankYouMessage) {
+                thankYouMessage.innerHTML = 'Thank you for your rating';
+                thankYouMessage.style.color = '#3e8e41'; // Set color to green
+            }
         }
-    </script>
+		const jobID = <?php echo json_encode(htmlspecialchars($_GET['jobID'])); ?>;
+    const updatedRatings = <?php echo json_encode([
+        'qualityRating' => $prefilledQualityRating,
+        'communicationRating' => $prefilledCommunicationRating,
+        'timelinessRating' => $prefilledTimelinessRating,
+        'priceRating' => $prefilledPriceRating,
+    ]); ?>;
+
+    // Prefill the star ratings based on the retrieved data
+    function prefillRatings() {
+        rateStar('qualityStars', updatedRatings.qualityRating);
+        rateStar('communicationStars', updatedRatings.communicationRating);
+        rateStar('timelinessStars', updatedRatings.timelinessRating);
+        rateStar('priceStars', updatedRatings.priceRating);
+    }
+
+    // Call the prefillRatings function after the page loads
+    window.onload = prefillRatings;
+</script>
 </body>
 
 </html>
