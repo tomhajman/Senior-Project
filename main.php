@@ -69,8 +69,8 @@ session_start();
     <a href="#services" class="w3-bar-item w3-button">SERVICES</a>
     <a href="#portfolio" class="w3-bar-item w3-button">PORTFOLIO</a>
     <a href="#contact" class="w3-bar-item w3-button">CONTACT</a>
-    <a href="Customer/CustomerLogin.php" class="w3-bar-item w3-button w3-right">CUSTOMER LOG IN</a>
-	<a href="Contractor/ContractorLogin.php" class="w3-bar-item w3-button w3-right">CONTRACTOR LOG IN</a>
+    <a href="CustomerLogin.php" class="w3-bar-item w3-button w3-right">CUSTOMER LOG IN</a>
+	<a href="ContractorLogin.php" class="w3-bar-item w3-button w3-right">CONTRACTOR LOG IN</a>
      
   </div>
 
