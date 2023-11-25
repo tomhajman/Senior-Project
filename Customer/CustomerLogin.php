@@ -123,7 +123,7 @@ $conn->close();
     </label>
 	<!--Added functionality to allow new users to get to registration page-->
 	<br><br><a href="CustomerRegistration.php">New user? Create an account here</a><br><br>
-	<a href="../main.php">Back to Main Menu</a>
+	<a href="main.php">Back to Main Menu</a>
 
   <div class="container" style="background-color:#f1f1f1">
     <button type="button" class="cancelbtn">Cancel</button>

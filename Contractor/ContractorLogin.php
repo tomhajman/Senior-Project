@@ -114,7 +114,7 @@ $conn->close();
 </form>
 
 <br><br><br><a href="ContractorRegister.php">New user? Create an account here</a><br><br>
-<a href="../main.php">Back to Main Menu</a>
+<a href="main.php">Back to Main Menu</a>
 </div>
 </body>
 </html>
