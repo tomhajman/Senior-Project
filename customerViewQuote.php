@@ -100,6 +100,7 @@
         }
 		button:hover {
 			background-color: #0056b3;
+		}
 			
 </style>
 </head>
@@ -140,7 +141,14 @@
 		$getTitle = "SELECT jobTitle FROM customerJob WHERE jobID = {$record['jobID']}";
 		$result2 = $conn->query($getTitle);
 		$record2 = mysqli_fetch_assoc($result2);
-		
+		$contractorName = $record['contractorName'];
+		$getContractorID = "SELECT contractorID FROM contractor WHERE contractorName = ?";
+		$stmt = $conn->prepare($getContractorID);
+		$stmt->bind_param("s", $contractorName);
+		$stmt->execute();
+		$result3 = $stmt->get_result();
+		$record3 = mysqli_fetch_assoc($result3);
+		echo "r3". $record3['contractorID'];
 		echo '<div class="quoteDetails">'.'<h2>'."Quote for: ".$record2['jobTitle'].'</h2>';
 		echo "Contractor Name: ".$record['contractorName']."<br>";
 		echo "Quote Price: $".$record['quotePrice']."<br>";
@@ -151,7 +159,7 @@
 ?>
 	<form action="#" method="post">
 		<button id="acceptQuote" name="acceptQuote" type="submit">Accept Quote</button>
-		<button id="rejectQuote" name="rejectQuote" type="button">Reject Quote</button>
+		<button id="rejectQuote" name="rejectQuote" type="submit">Reject Quote</button>
 	</form>
 	<form action="#" method="post">
 		<input type="hidden" name="jobIDforConversation" value=<?php echo "'{$id}'"; ?>>
@@ -164,14 +172,22 @@
 		//set jobStatus to In Progress
 		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress' WHERE jobID = {$record['jobID']}";
 		$conn->query($updateStatus);
+		$addContractorID = "UPDATE customerJob SET contractorID = {$record3['contractorID']} WHERE jobID = {$record['jobID']}";
+		$conn->query($addContractorID);
 		header("Location: CustomerManageJobs.php");
 		exit();
 	}
 	
+	//Deletes the quote if customer declines.
 	if (isset($_POST['rejectQuote'])) {
-		//Should I drop the quote from the jobQuotes table if rejected?
+		$deleteQuery = "DELETE FROM jobQuote WHERE quoteID = '$id'";
+		$result = $conn->query($deleteQuery);
+		if ($result) {
 		header("Location: viewQuotes.php");
 		exit();
+		}
+		else 
+			echo "Error deleting quote" . $conn->error;
 	}
 ?>
 

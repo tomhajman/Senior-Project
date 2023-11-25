@@ -1,14 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
-	<link rel="stylesheet" href="css/CustomerUpdatePage.css">
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .icon {
+            padding: 10px;
+            background: dodgerblue;
+            color: white;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            outline: none;
+            border: 2px solid #f1f1f1;
+        }
+
+        .input-field:focus {
+            border: 2px solid dodgerblue;
+        }
+
+        .btn {
+            background-color: dodgerblue;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .btn:hover {
+            opacity: 1;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header .dropdown {
+            position: relative;
+        }
+
+        header .dropbtn {
+            background-color: #333;
+            color: #fff;
+            padding: 16px;
+            font-size: 24px;
+            border: none;
+        }
+
+        header .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            left: 0;
+            top: 100%;
+            z-index: 1;
+            text-align: left;
+        }
+
+        header .dropdown-content a {
+            color: gray;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        header .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        header .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        header .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+    </style>
 </head>
 <body>
     <?php
