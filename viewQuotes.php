@@ -82,7 +82,7 @@
 				echo '</li>';
 				//echo '<li><b>Email:</b> ' . $row["contractorEmail"] . '</li>';
 				//echo '<li><b>Phone:</b> ' . $row["contractorPhoneNumber"] . '</li>';
-				echo '<li><b>Quote Price:</b> '.$row["quotePrice"].'</li>';
+				echo '<li><b>Quote Price:</b> $'.$row["quotePrice"].'</li>';
 				echo '<li><b>Quote Date:</b> '.$row["quoteDate"].'</li>';
 				echo '<li><b>Estimated Completion Date:</b> '.$row["estimatedCompletionDate"].'</li>';
 			    echo '<li class="w3-theme-l5 w3-padding-16">';

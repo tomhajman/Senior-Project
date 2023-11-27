@@ -148,7 +148,6 @@
 		$stmt->execute();
 		$result3 = $stmt->get_result();
 		$record3 = mysqli_fetch_assoc($result3);
-		echo "r3". $record3['contractorID'];
 		echo '<div class="quoteDetails">'.'<h2>'."Quote for: ".$record2['jobTitle'].'</h2>';
 		echo "Contractor Name: ".$record['contractorName']."<br>";
 		echo "Quote Price: $".$record['quotePrice']."<br>";
@@ -169,11 +168,9 @@
 <?php		
 		
 	if (isset($_POST['acceptQuote'])) {
-		//set jobStatus to In Progress
-		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress' WHERE jobID = {$record['jobID']}";
+		//set jobStatus to In Progress and assign contractorID.
+		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress', contractorID = {$record3['contractorID']} WHERE jobID = {$record['jobID']}";
 		$conn->query($updateStatus);
-		$addContractorID = "UPDATE customerJob SET contractorID = {$record3['contractorID']} WHERE jobID = {$record['jobID']}";
-		$conn->query($addContractorID);
 		header("Location: CustomerManageJobs.php");
 		exit();
 	}

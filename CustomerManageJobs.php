@@ -249,6 +249,12 @@
 		$updateStatus = "UPDATE customerJob SET jobStatus = 'Completed' WHERE jobID = $jobIDforStatus";
 		$conn->query($updateStatus);
 	}
+	
+	if (isset($_POST['removeJob'])) {
+		$jobIDforStatus = $_POST['jobIDforStatus'];
+		$removeJob = "DELETE FROM customerJob WHERE jobID = $jobIDforStatus";
+		$conn->query($removeJob);
+	}
 		
 	?>	
   <header>
@@ -317,7 +323,11 @@
                 $status = $row['jobStatus'];
                 switch ($status) {
                     case 'Pending':
-                        echo "<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a></td>";
+                        echo "<td><a href='viewQuotes.php?id={$row['jobID']}'><button>View Quotes</button></a>
+						      <form action='#' method='post'>
+							    <input type='hidden' name='jobIDforStatus' value='{$jobID}'>
+							    <button type='submit' name='removeJob'>Remove Job</button>
+							  </form></td>";
                         break;
                     case 'In Progress':
                         echo "<td><form action='#' method='post'>
