@@ -1,0 +1,200 @@
+        body, h1, h2, h3, h4, h5, h6 {
+            font-family: "Lato", sans-serif;
+        }
+
+        body, html {
+            height: 100%;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .bgimg-1, .bgimg-2, .bgimg-3 {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .bgimg-1 {
+            background-image: url('/w3images/parallax1.jpg');
+            min-height: 100%;
+        }
+
+        .bgimg-2 {
+            background-image: url("/w3images/parallax2.jpg");
+            min-height: 400px;
+        }
+
+        .bgimg-3 {
+            background-image: url("/w3images/parallax3.jpg");
+            min-height: 400px;
+        }
+
+        .w3-wide {
+            letter-spacing: 10px;
+        }
+
+        .w3-hover-opacity {
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown {
+            position: absolute;
+            left: 0;
+        }
+
+        .dropbtn {
+            background-color: #333;
+            color: #fff;
+            padding: 16px;
+            font-size: 24px;
+            border: none;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            left: 0;
+            top: 100%;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: gray;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        .welcome-contractor {
+            margin-right: 10px;
+            margin-left: auto;
+        }
+
+        .w3-content {
+            padding: 64px;
+        }
+
+        .w3-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .w3-col {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .w3-col h4 {
+            margin: 10px 0;
+        }
+
+        .w3-col p {
+            margin: 0;
+        }
+
+        .manage-jobs-button,
+        .available-jobs-button {
+            width: 48%;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .manage-jobs-button a,
+        .available-jobs-button a {
+            font-size: 24px;
+            background-color: green;
+            padding: 5px 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .manage-jobs-button a:hover,
+        .available-jobs-button a:hover {
+            background-color: #3e8e41;
+        }
+
+        .calendar-container,
+        .recent-works-container {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .calendar {
+            text-align: center;
+        }
+
+        .calendar table {
+            width: 100%;
+        }
+
+        .calendar table th,
+        .calendar table td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .calendar table td.today {
+            background-color: #ddd;
+        }
+
+        .calendar-controls {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .calendar-controls button {
+            padding: 5px 10px;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+
+        .recent-works {
+            text-align: center;
+        }
+
+        .recent-works h2 {
+            margin-bottom: 10px;
+        }
+
+        .recent-works-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
