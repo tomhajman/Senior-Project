@@ -239,7 +239,7 @@
 			<a href="#">Service History</a>
             <a href="Contractors.php">View Contractors</a>
             <a href="CustomerUpdatePage.php">Account Settings</a>
-            <a href="CustomerLogin.php">Log Out</a>
+            <a href="Logout.php">Log Out</a>
         </div>
     </div>
     <div class="welcome-user">
