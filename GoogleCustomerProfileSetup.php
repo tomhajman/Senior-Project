@@ -40,9 +40,9 @@ if(isset($_GET['customerEmail']) && isset($_GET['access_token'])){
     exit();
 }
 
+$errors = [];
 if($_SERVER['REQUEST_METHOD'] == "POST"){
     // Handle form submission
-    $errors = [];
     $firstName = htmlspecialchars_decode($_POST['customerFirstName']);
     $lastName = htmlspecialchars_decode($_POST['customerLastName']);
     $streetAddress = $_POST['customerStreetAddress'];
