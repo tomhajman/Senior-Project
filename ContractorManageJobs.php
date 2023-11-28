@@ -135,7 +135,19 @@
 		  margin-right: 10px;
 		  margin-left: auto;
 		}
-
+		
+		.accepted-jobs {
+			margin-bottom: 200px;
+		}
+		
+		.pending-quotes {
+			padding-bottom: 20px;
+		}
+		
+		.manage-quote {
+			  text-align: center;
+		  }
+		
 		.w3-content {
 		  padding: 64px;
 		}
@@ -262,11 +274,10 @@
 	
 	<div class="w3-content w3-container w3-padding-64" id="book-service">
 		<a href="ContractorPage.php" class="w3-button">Back</a>
-		<h2>Manage your jobs</h2>
+		<h2>Manage Your Jobs</h2>
 	</div>
-	
+	<div class="accepted-jobs">
 	<?php
-		//I need to find out a way to get the jobs that haven't been accepted yet to allow Contractors to cancel their quotes.
 		$getJobs = $conn->prepare("SELECT * FROM customerJob WHERE contractorID = ?");
         $getJobs->bind_param("i", $contractorID);
 		
@@ -339,6 +350,79 @@
         }
 
         $result->free();
-        $conn->close();
     }
 	?>
+	</div>
+	<div class="pending-quotes">
+	<div class="manage-quote"><h2>Manage Pending Quotes</h2></div>
+	<?php		
+		$getQuotes = $conn->prepare("SELECT * FROM jobQuote JOIN customerJob ON jobQuote.jobID = customerJob.jobID WHERE contractorName = ? AND jobStatus = ?");
+		$pendingStatus = "Pending";
+		$getQuotes->bind_param("ss", $userName, $pendingStatus);
+
+		if ($getQuotes->execute()) {
+			$result2 = $getQuotes->get_result();
+			$getQuotes->close();
+
+			$rows2 = $result2->fetch_all(MYSQLI_ASSOC);
+
+			if (!empty($rows2)) {
+				echo '<div class="w3-row">';
+				echo "<table border='1'>";
+				echo "<tr>
+						<th>Title</th>
+						<th>Customer Name</th>
+						<th>Job Type</th>
+						<th>City</th>
+						<th>Address</th>
+						<th>Urgency</th>
+						<th>Job Price</th>
+						<th>Estimated Completion Date</th>
+						<th></th>
+					  </tr>";
+
+				foreach ($rows2 as $row2) {
+					$getJobInfo = $conn->prepare("SELECT jobTitle, customerLastName, jobType, jobCity, jobAddress, jobUrgency FROM customerJob WHERE jobID = ?");
+					$getJobInfo->bind_param("i", $row2['jobID']);
+					$getJobInfo->execute();
+
+					$result3 = $getJobInfo->get_result();
+					$row3 = $result3->fetch_assoc();
+
+					echo "<tr>
+							<td>{$row3['jobTitle']}</td>
+							<td>{$row3['customerLastName']}</td>
+							<td>{$row3['jobType']}</td>
+							<td>{$row3['jobCity']}</td>
+							<td>{$row3['jobAddress']}</td>
+							<td>{$row3['jobUrgency']}</td>
+							<td>{$row2['quotePrice']}</td>
+							<td>{$row2['estimatedCompletionDate']}</td>
+							<form action='#' method='post'><td><button type='submit' name='deleteQuote'>Delete Quote</button></form>
+						  </tr>";
+						if (isset($_POST['deleteQuote'])) {
+							$quoteID = $row2['quoteID'];
+							$deleteQuote = "DELETE FROM jobQuote WHERE quoteID = $quoteID";
+							$conn->query($deleteQuote);
+							echo '<script>window.location="ContractorManageJobs.php"</script>';
+							//I abhor header function for causing me a massive headache
+							//header("Location: {$_SERVER['PHP_SELF']}");
+							exit();
+						}
+					}
+				echo "</table>";
+				echo "</div>";
+			} else {
+				echo "No pending quotes";
+			}
+
+			$result2->free();
+			
+			
+		}
+		$conn->close();
+	?>
+
+	</div>
+</body>
+</html>
