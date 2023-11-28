@@ -211,7 +211,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <input type="text" placeholder="Enter city" name="customerCity" required>
 
       <label for="customerZip"><b>Zip</b></label>
-      <input type="text" placeholder="Enter customerZip" name="customerZip" required>
+      <input type="text" placeholder="Enter Zip Code" name="customerZip" required>
 	  
 	  <label for="customerCounty"><b>County</b></label>
 	  <input type="radio" name="customerCounty" id="Suffolk" value="Suffolk" required>

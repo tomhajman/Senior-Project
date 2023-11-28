@@ -36,37 +36,57 @@ if (isset($_GET['code'])) {
 
     // Check if user exists in the database
     $conn = connectToDatabase();
-    $findDuplicate = $conn->prepare("SELECT COUNT(customerEmail) FROM customer WHERE customerEmail=?");
+    $findDuplicate = $conn->prepare("SELECT COUNT(customerEmail), customerStreetAddress FROM customer WHERE customerEmail=?");
     $findDuplicate->bind_param("s", $email);
     $findDuplicate->execute();
-    $findDuplicate->bind_result($numOfDuplicates);
+    $findDuplicate->bind_result($numOfDuplicates, $customerStreetAddress);
     $findDuplicate->fetch();
     $findDuplicate->close();
     $userExists = ($numOfDuplicates != 0);
-
-    if ($userExists) {
-        // User exists, so update their information
-        $stmt = $conn->prepare("UPDATE customer SET customerFirstName = ?, customerLastName = ?, access_token = ?, refresh_token = ?, token_type = ?, expires_in = ? WHERE customerEmail = ?");
-        $stmt->bind_param("sssssss", $first_name, $last_name, $token['access_token'], $token['refresh_token'], $token['token_type'], $token_expiry, $email);
-    } else {
-        // User doesn't exist, so insert a new record
-        $stmt = $conn->prepare("INSERT INTO customer (customerEmail, customerFirstName, customerLastName, access_token, refresh_token, token_type, expires_in, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("sssssss", $email, $first_name, $last_name, $token['access_token'], $token['refresh_token'], $token['token_type'], $token_expiry);
-    }
+    $isProfileComplete = (!(is_null($customerStreetAddress)));
 
     // Token expiry
     $token_expiry = date('Y-m-d H:i:s', time() + $token['expires_in']);
 
-    // Execute the statement
-    $stmt->execute();
-    $stmt->close();
-    $conn->close();
-
-    // Redirect to your customer page
-    session_start();
-    $_SESSION['customerEmail'] = $email;
-    header('Location: CustomerPage.php');
-    exit();
+    if ($userExists && $isProfileComplete) {
+        // User exists and profile is complete, so update their information
+        $stmt = $conn->prepare("UPDATE customer SET access_token = ?, refresh_token = ?, token_type = ?, expires_in = ? WHERE customerEmail = ?");
+        $stmt->bind_param("sssss", $token['access_token'], $token['refresh_token'], $token['token_type'], $token_expiry, $email);
+        // Execute the statement
+        $stmt->execute();
+        $stmt->close();
+        $conn->close();
+        
+        // Log in and redirect to your customer page
+        session_start();
+        $_SESSION['customerEmail'] = $email;
+        header('Location: CustomerPage.php');
+        exit();
+    } else {
+        if(!$userExists){
+            // User doesn't exist, so insert a new record and send them to complete the profile
+            $stmt = $conn->prepare("INSERT INTO customer (customerEmail, customerFirstName, customerLastName, access_token, refresh_token, token_type, expires_in, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+            $stmt->bind_param("sssssss", $email, $first_name, $last_name, $token['access_token'], $token['refresh_token'], $token['token_type'], $token_expiry);
+            // Execute the statement
+            $stmt->execute();
+            $stmt->close();
+            $conn->close();
+        } else {
+            // User exists, profile is not filled so update their information
+            $stmt = $conn->prepare("UPDATE customer SET access_token = ?, refresh_token = ?, token_type = ?, expires_in = ? WHERE customerEmail = ?");
+            $stmt->bind_param("sssss", $token['access_token'], $token['refresh_token'], $token['token_type'], $token_expiry, $email);
+            // Execute the statement
+            $stmt->execute();
+            $stmt->close();
+            $conn->close();
+        }
+        // Redirect user to profile setup page
+        $access_token = $token['access_token'];
+        $location = "Location: GoogleCustomerProfileSetup.php?customerEmail={$email}&access_token={$access_token}&firstName={$first_name}&lastName={$last_name}";
+        header($location);
+        exit();
+    }
+    
 } else {
     $auth_url = $client->createAuthUrl();
     header('Location: ' . $auth_url);
