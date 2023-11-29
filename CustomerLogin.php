@@ -90,22 +90,25 @@ $conn = connectToDatabase();
 $inputUsername = $_POST['username'];
 $inputPassword = $_POST['password'];
 
-$stmt = $conn->prepare("SELECT customerPassword FROM customer WHERE customerEmail = ?");
+$stmt = $conn->prepare("SELECT customerPassword, access_token FROM customer WHERE customerEmail = ?");
  if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
 $stmt->bind_param("s", $inputUsername);
 $stmt->execute();
-$stmt->bind_result($dbPassword);
+$stmt->bind_result($dbPassword, $access_token);
 $stmt->fetch();
 
-//Compares to DB info, sends to customer home page if correct, tells user info is incorrect if false.
-if (password_verify($inputPassword, $dbPassword)){
+//Compares to DB info, sends to customer home page if correct, tells user info is incorrect if false. Tells user to sign in with google if they used Oauth
+if(!(is_null($access_token))){
+  echo "<font color = 'red'> Please sign in using Google.</font>";
+} else if (password_verify($inputPassword, $dbPassword)){
 	$_SESSION['customerEmail'] = $inputUsername;
 	header('Location: CustomerPage.php');
 	exit;
-}else
+} else {
 	echo "<font color = 'red'> Email or Password is incorrect.</font>";
+}
 $stmt->close();
 $conn->close();
 }
