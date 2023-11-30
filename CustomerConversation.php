@@ -2,7 +2,12 @@
 
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['customerEmail'];
+		if(isset($_SESSION['customerEmail'])){
+      $userEmail = $_SESSION['customerEmail'];
+    } else {
+      header("Location: CustomerLogin.php?redirect=authFail");
+      exit();
+    }
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -23,7 +28,23 @@
 		} else {
 			$userFName = "User";
 		}
-        $getCustomerInfo->close();
+    $getCustomerInfo->close();
+
+    // Check if user has permission to access the conversation
+    if(isset($_GET['id'])){
+      $getMatchingConversation = $conn->prepare("SELECT customerEmail FROM conversations WHERE conversationID=?");
+      $getMatchingConversation->bind_param("i", $_GET['id']);
+      if($getMatchingConversation->execute()){
+        $getMatchingConversation->bind_result($dbEmail);
+        $getMatchingConversation->fetch();
+        $getMatchingConversation->close();
+        if($dbEmail != $userEmail){
+          header("Location: ContractorMessageCenter.php?redirect=accessDenied");
+          exit();
+        }
+      }
+    }
+
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
             $messageContent = $_POST['messageContent'];

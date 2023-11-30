@@ -2,7 +2,13 @@
 
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['contractorEmail'];
+		
+    if(isset($_SESSION['contractorEmail'])){
+      $userEmail = $_SESSION['contractorEmail'];
+    } else {
+      header("Location: ContractorLogin.php?redirect=authFail");
+      exit();
+    }
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -15,15 +21,30 @@
 
 		$conn = connectToDB();
 		$getContractorInfo = $conn->prepare("SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?");
-        $getContractorInfo->bind_param("s", $userEmail);
+    $getContractorInfo->bind_param("s", $userEmail);
 
 		if ($getContractorInfo->execute()) {
 			$getContractorInfo->bind_result($userName, $contractorID);
-            $getContractorInfo->fetch();
+      $getContractorInfo->fetch();
 		} else {
 			$userName = "User";
 		}
     $getContractorInfo->close();
+
+    // Check if user has permission to access the conversation
+    if(isset($_GET['id'])){
+      $getMatchingConversation = $conn->prepare("SELECT contractorEmail FROM conversations WHERE conversationID=?");
+      $getMatchingConversation->bind_param("i", $_GET['id']);
+      if($getMatchingConversation->execute()){
+        $getMatchingConversation->bind_result($dbEmail);
+        $getMatchingConversation->fetch();
+        $getMatchingConversation->close();
+        if($dbEmail != $userEmail){
+          header("Location: ContractorMessageCenter.php?redirect=accessDenied");
+          exit();
+        }
+      }
+    }
 
         if(isset($_POST['messageContent']) && isset($_GET['id']) && is_numeric($_GET['id'])){
             $messageContent = $_POST['messageContent'];
@@ -365,7 +386,7 @@
                 <a href="AvailableJobs.php">Available Jobs</a>
                 <a href="#">Job History</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>
-                <a href="ContractorLogin.php">Log Out</a>
+                <a href="Logout.php">Log Out</a>
             </div>
         </div>
 		<div class="welcome-contractor">Welcome, <?php echo htmlspecialchars($userName); ?></div> 

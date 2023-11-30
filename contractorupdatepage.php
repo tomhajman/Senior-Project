@@ -134,7 +134,12 @@
 <?php
     session_start();
     include 'DBCredentials.php';
-    $userEmail = $_SESSION['contractorEmail'];
+    if(isset($_SESSION['contractorEmail'])){
+        $userEmail = $_SESSION['contractorEmail'];
+      } else {
+        header("Location: ContractorLogin.php?redirect=authFail");
+        exit();
+      }
 
     function connectToDB() {
         global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;

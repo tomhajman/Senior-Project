@@ -12,8 +12,9 @@ function connectToDatabase() {
 
     return $conn;
 }
+session_start();
 
-if(isset($_GET['customerEmail']) && isset($_GET['access_token'])){
+if(isset($_GET['customerEmail'])){
     // Check if info matches database AND profile is not set up
     $conn = connectToDatabase();
     $stmt = $conn->prepare("SELECT access_token, customerStreetAddress FROM customer WHERE customerEmail=?");
@@ -24,7 +25,7 @@ if(isset($_GET['customerEmail']) && isset($_GET['access_token'])){
     $stmt->close();
     
     // If token is wrong OR if profile is already completed boot user to login
-    if($_GET['access_token'] != $db_access_token || !(is_null($db_address))){
+    if($_SESSION['access_token'] != $db_access_token || !(is_null($db_address))){
         header('Location: CustomerLogin.php?redirect=authFail');
         exit();
     }
@@ -108,7 +109,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             echo "<script>alert('Account created successfully.');</script>";
             
             // Log in and redirect to customer page
-            session_start();
             $_SESSION['customerEmail'] = $email;
             header('Location: CustomerPage.php');
             exit();

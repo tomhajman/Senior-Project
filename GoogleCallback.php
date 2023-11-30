@@ -81,8 +81,9 @@ if (isset($_GET['code'])) {
             $conn->close();
         }
         // Redirect user to profile setup page
-        $access_token = $token['access_token'];
-        $location = "Location: GoogleCustomerProfileSetup.php?customerEmail={$email}&access_token={$access_token}&firstName={$first_name}&lastName={$last_name}";
+        session_start();
+        $_SESSION['access_token'] = $token['access_token'];
+        $location = "Location: GoogleCustomerProfileSetup.php?customerEmail={$email}&firstName={$first_name}&lastName={$last_name}";
         header($location);
         exit();
     }

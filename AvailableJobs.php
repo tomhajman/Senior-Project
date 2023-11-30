@@ -73,7 +73,12 @@ tr:nth-child(even) {background-color: #b4cbed;}
 		//Connecting DB, passing contractorEmail, can later change this to boot user to login page if they are not signed in. For now will just throw an error.
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['contractorEmail'];
+		if(isset($_SESSION['contractorEmail'])){
+			$userEmail = $_SESSION['contractorEmail'];
+		  } else {
+			header("Location: ContractorLogin.php?redirect=authFail");
+			exit();
+		  }
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);

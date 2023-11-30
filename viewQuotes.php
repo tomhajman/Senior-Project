@@ -49,7 +49,13 @@
   
 <?php
 	session_start();
-    include 'DBCredentials.php';
+  if(isset($_SESSION['customerEmail'])){
+    $userEmail = $_SESSION['customerEmail'];
+  } else {
+    header("Location: CustomerLogin.php?redirect=authFail");
+    exit();
+  }
+  include 'DBCredentials.php';
 	function connectToDB() {
         global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
         $conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);

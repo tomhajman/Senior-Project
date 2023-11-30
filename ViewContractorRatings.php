@@ -115,13 +115,12 @@
     include 'DBCredentials.php';
 
     // Check if contractor session information exists
-    if (!isset($_SESSION['contractorEmail'])) {
-        // Redirect to contractors page or another location
-        header('Location: Contractors.php');
+    if(isset($_SESSION['contractorEmail'])){
+        $userEmail = $_SESSION['contractorEmail'];
+      } else {
+        header("Location: ContractorLogin.php?redirect=authFail");
         exit();
-    }
-
-    $userEmail = $_SESSION['contractorEmail'];
+      }
 
     function connectToDB()
     {
@@ -155,7 +154,7 @@
 
     function getOverallAverageRating($db, $contractorEmail)
     {
-        $overallAvgQuery = "SELECT contractorRating FROM contractor WHERE contractorEmail = '$contractorEmail')";
+        $overallAvgQuery = "SELECT contractorRating FROM contractor WHERE contractorEmail = '$contractorEmail'";
         $result = $db->query($overallAvgQuery);
 
         if ($result && $result->num_rows > 0) {
@@ -171,7 +170,7 @@
 
     function getRatingTable($db, $contractorEmail)
     {
-        $ratingTableQuery = "SELECT category, rating FROM rating WHERE contractorID = (SELECT contractorID FROM contractors WHERE contractorEmail = '$contractorEmail')";
+        $ratingTableQuery = "SELECT category, rating FROM rating WHERE contractorID = (SELECT contractorID FROM contractor WHERE contractorEmail = '$contractorEmail')";
         $result = $db->query($ratingTableQuery);
 
         if ($result && $result->num_rows > 0) {
@@ -223,8 +222,8 @@
                 <h3>Overall Rating</h3>
                 <?php echo getOverallAverageRating($db, $userEmail); ?>
 
-                <h3>Category-wise Ratings</h3>
-                <?php echo getRatingTable($db, $userEmail); ?>
+                <!--<h3>Category-wise Ratings</h3>-->
+                <?php //echo getRatingTable($db, $userEmail); ?>
             </div>
         </div>
     </div>

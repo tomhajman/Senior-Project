@@ -196,7 +196,12 @@
 	<?php
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['contractorEmail'];
+		if(isset($_SESSION['contractorEmail'])){
+			$userEmail = $_SESSION['contractorEmail'];
+		  } else {
+			header("Location: ContractorLogin.php?redirect=authFail");
+			exit();
+		  }
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -266,7 +271,7 @@
                 <a href="#">Job History</a>
                 <a href="ViewContractorRatings.php">View Ratings</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>
-                <a href="ContractorLogin.php">Log Out</a>
+                <a href="Logout.php">Log Out</a>
             </div>
         </div>
         <div class="welcome-contractor">Welcome, <?php echo isset($userName) ? $userName : 'Contractor'; ?></div>

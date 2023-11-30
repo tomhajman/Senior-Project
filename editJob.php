@@ -76,7 +76,12 @@
 	<?php
 		session_start();
 		include 'DBCredentials.php';
-		$userEmail = $_SESSION['customerEmail'];
+		if(isset($_SESSION['customerEmail'])){
+            $userEmail = $_SESSION['customerEmail'];
+          } else {
+            header("Location: CustomerLogin.php?redirect=authFail");
+            exit();
+          }
 		function connectToDB() {
 			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
 				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
@@ -89,7 +94,7 @@
 		$db = connectToDB();
         // Get job info from DB
         if(isset($_GET['id']) && is_numeric($_GET['id'])){
-            $stmt = $conn->prepare("SELECT jobType, jobTitle, jobDescription, jobUrgency FROM customerJob WHERE jobID=?");
+            $stmt = $conn->prepare("SELECT jobType, jobTitle, jobDescription, jobUrgency, customerID FROM customerJob WHERE jobID=?");
             $stmt->bind_param("i", $_GET['id']);
             if(!($stmt->execute())){
                 die("job with ID = {$_GET['id']} doesn't exist");
@@ -97,6 +102,22 @@
             $result = $stmt->get_result();
             $oldInfo = $result->fetch_assoc();
             $stmt->close();
+
+            $checkAccess = $db->prepare("SELECT customerEmail FROM customer WHERE customerID=?");
+            $checkAccess->bind_param("i", $oldInfo['customerID']);
+            if($checkAccess->execute()){
+                $checkAccess->bind_result($dbEmail);
+                $checkAccess->fetch();
+                if($dbEmail != $userEmail){
+                    header("Location: CustomerManageJobs.php?redirect=accessDenied");
+                    exit();
+                }
+            } else {
+                die("Error connecting to database: ". $db->error);
+            }
+        } else {
+            header("Location: CustomerManageJobs.php?redirect=notFound");
+            exit();
         }
         // Sanitize old input
         $title = htmlspecialchars($oldInfo['jobTitle']); 

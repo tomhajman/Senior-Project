@@ -130,6 +130,12 @@
     <?php
     session_start();
     include 'DBCredentials.php';
+    if(isset($_SESSION['customerEmail'])){
+        $userEmail = $_SESSION['customerEmail'];
+      } else {
+        header("Location: CustomerLogin.php?redirect=authFail");
+        exit();
+      }
 
     function connectToDatabase() {
         global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
@@ -262,7 +268,7 @@
 				<a href="#">Service History</a>
 				<a href="Contractors.php">View Contractors</a>
 				<a href="CustomerUpdatePage.php">Account Settings</a>
-				<a href="CustomerLogin.php">Log Out</a>
+				<a href="Logout.php">Log Out</a>
             </div>
         </div>
         <div class="welcome-user">
