@@ -142,6 +142,7 @@
 		
 		.pending-quotes {
 			padding-bottom: 20px;
+			text-align: center;
 		}
 		
 		.manage-quote {
@@ -384,6 +385,7 @@
 						<th>Job Price</th>
 						<th>Estimated Completion Date</th>
 						<th></th>
+						<th></th>
 					  </tr>";
 
 				foreach ($rows2 as $row2) {
@@ -403,7 +405,8 @@
 							<td>{$row3['jobUrgency']}</td>
 							<td>{$row2['quotePrice']}</td>
 							<td>{$row2['estimatedCompletionDate']}</td>
-							<form action='#' method='post'><td><button type='submit' name='deleteQuote'>Delete Quote</button></form>
+							<td><a href='editQuote.php?id={$row2['quoteID']}'><button>Edit</button></a></td>
+							<td><form action='#' method='post'><button type='submit' name='deleteQuote'>Delete Quote</button></form></td>
 						  </tr>";
 						if (isset($_POST['deleteQuote'])) {
 							$quoteID = $row2['quoteID'];

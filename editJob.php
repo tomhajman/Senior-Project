@@ -70,6 +70,20 @@
         button:hover {
             background-color: #555;
         }
+		a {
+			text-align: center;
+			float: right; 
+			text-decoration: none; 
+			padding: 10px 20px; 
+			background-color: #333; 
+			color: #fff; 
+			border: none; 
+			border-radius: 5px; 
+			cursor: pointer;
+		}
+		a:hover {
+			background-color: #555;
+		}
     </style>
 </head>
 <body>
@@ -156,6 +170,7 @@
 			
 			if ($stmt->execute()) {
 			    echo "<script>alert('Job updated successfully.');</script>";
+				echo "<script>window.location='editJob.php?id={$_GET['id']}'</script>";
 				//echo "Job updated successfully";
 			} else {
 			    echo "<script>alert('Error'" . $stmt->error . ");</script>";
@@ -264,6 +279,7 @@
             <input type="file" id="otherImages" name="otherImages[]" accept="image/*" multiple>
 
             <button type="submit">Update Request</button>
+			<a href="CustomerManageJobs.php">Return to Manage Jobs page</a>
         </form>
     </div>
 </body>

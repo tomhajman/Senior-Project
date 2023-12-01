@@ -76,23 +76,18 @@
 			$conn = connectToDB();
 			$getContractorInfo = $conn->prepare("SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?");
 			$getContractorInfo->bind_param("s", $userEmail);
-			$quoteDate = date("Y-m-d");
-			
-			function getContractorName()
-			{
-				global $conn, $userEmail;
-				$getNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
-				$result = $conn->query($getNameQuery);
-				if ($result) {
-					$row= $result->fetch_assoc();
-					$contractorName = $row['contractorName'];
-				}
-				else
-					$contractorName = "N/A";
-				return $contractorName;
+			$getContractorInfo->execute();
+			$result = $getContractorInfo->get_result();
+			if ($result->num_rows > 0) {
+				$row = $result->fetch_assoc();
+				$contractorName = $row['contractorName'];
+				$contractorID = $row['contractorID'];
+			} else {
+				$contractorName = "N/A";
+				$contractorID = "N/A";
 			}
 			
-			$contractorName = getContractorName();
+			$quoteDate = date("Y-m-d");
 			
 			if ($_SERVER["REQUEST_METHOD"] == "POST") {
 				$quoteCost = $_POST['quoteCost'];
@@ -103,8 +98,8 @@
 					die("Invalid completion date");
  			
 			
-				$stmt = $conn->prepare("INSERT INTO jobQuote (jobID, contractorName, quotePrice, quoteDate, estimatedCompletionDate, quoteDetails) VALUES (?, ?, ?, ?, ?, ?)");
-				$stmt-> bind_param("isisss", $jobID, $contractorName, $quoteCost, $quoteDate, $quoteCompletionDate, $quoteDetails);
+				$stmt = $conn->prepare("INSERT INTO jobQuote (jobID, contractorID, contractorName, quotePrice, quoteDate, estimatedCompletionDate, quoteDetails) VALUES (?, ?, ?, ?, ?, ?, ?)");
+				$stmt-> bind_param("iisisss", $jobID, $contractorID, $contractorName, $quoteCost, $quoteDate, $quoteCompletionDate, $quoteDetails);
 				if ($stmt->execute())
 					echo "Quote sent successfully";
 				else
