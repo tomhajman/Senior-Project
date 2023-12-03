@@ -241,7 +241,7 @@
         <button class="dropbtn">...</button>
         <div class="dropdown-content">
 			<a href="CustomerMessageCenter.php">Messages</a>
-			<a href="#">Service History</a>
+			<a href="CustomerManageJobs.php">Service History</a>
             <a href="Contractors.php">View Contractors</a>
             <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="Logout.php">Log Out</a>

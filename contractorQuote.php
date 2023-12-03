@@ -2,51 +2,7 @@
 <html>
 <head>
     <title>Send Quote</title>
-	<style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            font-weight: bold;
-            display: inline-block;
-            width: 250px;
-        }
-        input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-		button {
-			background-color: #007bff;
-            color: white;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-			float: right;
-			vertical-align: top;
-		}
-		button:hover {
-			background-color: #0056b3;
-		}
-    </style>
+	 <link rel="stylesheet" href="css/ConQuote.css">
 </head>
 
 <body>

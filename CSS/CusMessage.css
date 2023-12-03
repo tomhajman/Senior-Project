@@ -1,4 +1,4 @@
- body,
+  body,
     h2,
     h3,
     h4,
@@ -61,12 +61,6 @@
       background-color: #f2f2f2;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .center-div{
-        align-items: center;
     }
 
     header {
@@ -171,64 +165,4 @@
 
     .w3-col p {
       margin: 0;
-    }
-
-    .chat-container {
-        display: flex;
-        flex-direction: column; /* Stack messages vertically */
-        align-items: flex-start; /* Align items to the start (left) by default */
-        width: 80%;
-        max-width: 600px;
-        border: 1px solid #ddd;
-        padding: 10px;
-        margin-bottom: 10px;
-        height: 300px; /* Adjust as needed */
-        overflow-y: auto;
-    }
-
-    .main-content {
-        display: flex;
-        flex-direction: column; /* Stack children vertically */
-        align-items: center; /* Center-align children horizontally */
-        justify-content: flex-start; /* Align children to the start of the main axis */
-        min-height: 100vh;
-        padding-top: 0px; /* Adjust if you have a header */
-    }
-
-    .message {
-        margin: 5px;
-        padding: 10px;
-        border-radius: 10px;
-        max-width: 70%;
-    }
-
-    .sent {
-        background-color: #e0f7fa;
-        align-self: flex-start;
-    }
-
-    .received {
-        background-color: #fce4ec;
-        align-self: flex-end;
-    }
-
-    .message-input {
-        width: 130%;
-        max-width: 600px;
-        height: 50px; /* Adjust as needed */
-        margin-bottom: 10px;
-    }
-
-    .reply-button {
-        width: 100px;
-        padding: 10px;
-        background-color: blue;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .reply-button:hover {
-        background-color: darkblue;
     }

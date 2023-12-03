@@ -34,7 +34,6 @@
 
 <div class="main-content">
   <form class="modal-content" action="" method="post">
-    <input type="text" placeholder="Search Contractor" id="searchJobs" class="w3-input">
     <span class="w3-margin-right">Filter:</span> 
     <button class="w3-button w3-black" name="filterBtn" value="allJobsBtn">ALL</button>
     <button class="w3-button w3-white" name="filterBtn" value="Electrician"><i class="fa fa-wrench w3-margin-right"></i>Electrical</button>

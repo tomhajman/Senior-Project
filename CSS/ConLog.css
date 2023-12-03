@@ -1,11 +1,11 @@
-   body {
+ body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 50px auto;
             background-color: #fff;
             padding: 20px;
@@ -16,8 +16,16 @@
             font-weight: bold;
             display: inline-block;
             width: 250px;
+		}
+		input[type="username"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px -10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
-        input[type="submit"] {
+		input[type="submit"] {
             background-color: #007bff;
             color: white;
             padding: 14px 20px;
@@ -25,7 +33,7 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        input[type="submit"]:hover {
+		input[type="submit"]:hover {
             background-color: #0056b3;
         }
 		button {
@@ -36,7 +44,6 @@
             border-radius: 4px;
             cursor: pointer;
 			float: right;
-			vertical-align: top;
 		}
 		button:hover {
 			background-color: #0056b3;
