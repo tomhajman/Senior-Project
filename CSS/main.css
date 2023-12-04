@@ -1,0 +1,43 @@
+        body, h1, h2, h3, h4, h5, h6 {font-family: "Lato", sans-serif;}
+        body, html {
+          height: 100%;
+          color: #333;
+          line-height: 1.8;
+          margin: 0; /* Remove default margin */
+        }
+
+        /* Create a Parallax Effect */
+        .bgimg-1, .bgimg-2, .bgimg-3 {
+          background-attachment: fixed;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+
+        /* First image (Logo. Full height) */
+        .bgimg-1 {
+          background-image: url('/w3images/parallax1.jpg');
+          min-height: 100%;
+          position: relative;
+        }
+
+        /* Add this style for the logo */
+        .logo-container {
+          text-align: center;
+          padding: 50px 0 20px; /* Adjust as needed */
+        }
+
+        .logo {
+          max-width: 30%; /* Adjust the logo size to be 50% smaller */
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+
+        /* Add this style for the Welcome text */
+        .welcome-text {
+          text-align: center;
+          color: #fff;
+          font-size: 24px;
+          margin-top: 20px; /* Adjust the margin to move the welcome text closer to the logo */
+        }
