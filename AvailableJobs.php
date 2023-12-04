@@ -23,6 +23,7 @@ td {
 }
 tr:nth-child(even) {background-color: #b4cbed;}
 </style>
+<script src='ImageLoading.js'></script>
 </head>
 <body class="w3-light-grey w3-content" style="max-width:1600px">
 
@@ -121,7 +122,8 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				$getID = $getCoverPicture->fetch_assoc();
 				
 				echo '<tr>';
-				echo "<td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>";
+				echo "<td><img src='assets/loading.png' alt='Loading' class='loading-image' width='160px' height='90px'/>
+					<img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image' style='display: none;' onload='imageLoaded(this)'></td>";
 				echo '<td>'.$record['jobType'].'</td>';
 				echo '<td>'.$record['jobTitle'].'</td>';
 				echo '<td>'.$record['jobCounty'].'</td>';

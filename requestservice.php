@@ -296,8 +296,8 @@
             <input type="file" id="otherImages" name="otherImages[]" accept="image/*" multiple>
 
             <button type="submit">Submit Request</button>
-			<button><a href="CustomerPage.php">Return to Dashboard</a></button>
         </form>
+        <a href="CustomerPage.php"><button>Return to Dashboard</button></a>
     </div>
 </body>
 </html>

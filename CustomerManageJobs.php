@@ -11,9 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="css/CusManJobs.css">
-  <style>
-   
-  </style>
+  <script src='ImageLoading.js'></script>
 </head>
 
 <body>
@@ -151,7 +149,8 @@
                 $jobID = $row['jobID'];
 
                 echo "<tr>
-                            <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Job Cover Image'></td>
+                            <td><img src='assets/loading.png' alt='Loading' class='loading-image' width='160px' height='90px'/>
+                            <img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Job Cover Image' style='display: none;' onload='imageLoaded(this)'></td>
                             <td>{$row['jobTitle']}</td>
                             <td>{$row['jobType']}</td>
                             <td>{$row['jobStatus']}</td>
