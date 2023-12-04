@@ -57,16 +57,6 @@ if ($result) {
 </header>
 	
 	<?php
-		function connectToDB() {
-			global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
-				$conn = new mysqli($HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME);
-				
-				if ($conn->connect_error) {
-					die("Connection issue: ".$conn->connect_error);
-				}			
-			return $conn;
-		}
-	
 	if (isset($_GET['id'])) {
 		$conn = connectToDB();
 		$id = $_GET['id'];

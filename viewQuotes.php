@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,7 +51,6 @@
 <div class="w3-row-padding w3-center w3-padding-16" id="contractorQuotes">
   
 <?php
-	session_start();
   if(isset($_SESSION['customerEmail'])){
     $userEmail = $_SESSION['customerEmail'];
   } else {

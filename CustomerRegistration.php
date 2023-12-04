@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
   <link rel="stylesheet" href="css/CusReg.css">
@@ -5,7 +8,6 @@
 <body>
 
 <?php
-session_start();
 include 'DBCredentials.php';
 function connectToDatabase() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;

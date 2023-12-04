@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,10 +8,8 @@
 	 <link rel="stylesheet" href="css/ConQuote.css">
 </head>
 
-<body>
-		
+<body>		
 		<?php
-			session_start();
 			include 'DBCredentials.php';
 			if(isset($_SESSION['contractorEmail'])){
 				$userEmail = $_SESSION['contractorEmail'];

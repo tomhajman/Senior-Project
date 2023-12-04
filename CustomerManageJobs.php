@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,8 +18,6 @@
 
 <body>
   <?php
-
-		session_start();
 		include 'DBCredentials.php';
 		if(isset($_SESSION['customerEmail'])){
       $userEmail = $_SESSION['customerEmail'];

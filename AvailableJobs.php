@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,7 +74,6 @@ tr:nth-child(even) {background-color: #b4cbed;}
   <!-- Rest of the content... -->
   	<?php
 		//Connecting DB, passing contractorEmail, can later change this to boot user to login page if they are not signed in. For now will just throw an error.
-		session_start();
 		include 'DBCredentials.php';
 		if(isset($_SESSION['contractorEmail'])){
 			$userEmail = $_SESSION['contractorEmail'];

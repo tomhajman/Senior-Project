@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +12,6 @@
 <div class="container">
 <h2>Contractor Login Form</h2>
 <?php
-session_start();
 include 'DBCredentials.php';
 //DB Connection
 function connectToDatabase() {

@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -47,7 +50,6 @@
   <div class="w3-row-padding w3-center w3-padding-16" id="contractorDetails">
     <?php
       // PHP code to fetch contractor data
-      session_start();
       include 'DBCredentials.php';
 
       function connectToDB() {

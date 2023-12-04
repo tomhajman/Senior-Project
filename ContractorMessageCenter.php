@@ -1,8 +1,9 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <?php
-
-    session_start();
     include 'DBCredentials.php';
     if(isset($_SESSION['contractorEmail'])){
       $userEmail = $_SESSION['contractorEmail'];
