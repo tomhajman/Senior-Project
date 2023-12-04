@@ -54,7 +54,7 @@
          <a href="ContractorPage.php">Home</a>
          <a href="ContractorMessageCenter.php">Messages</a>
          <a href="AvailableJobs.php">Available Jobs</a>
-         <a href="#">Job History</a>
+         <a href="ContractorManageJobs.php">Job History</a>
          <a href="ContractorUpdatePage.php">Account Settings</a>
          <a href="Logout.php">Log Out</a>
         </div>
@@ -117,7 +117,7 @@
                     echo "<td>{$customerName}</td>
                             <td>{$title}</td>
                             <td>{$status}</td>
-                            <td><a href='contractorConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
+                            <td><a href='ContractorConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
                     if ($unreadMessagesCount > 0) {
                       echo "<td>New Message(s)</td>";
                     } 

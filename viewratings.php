@@ -2,7 +2,12 @@
 session_start();
 
 include 'DBCredentials.php';
-$userEmail = $_SESSION['contractorEmail'] ?? '';
+if(isset($_SESSION['contractorEmail'])){
+    $userEmail = $_SESSION['contractorEmail'];
+  } else {
+    header("Location: ContractorLogin.php?redirect=authFail");
+    exit();
+  }
 
 function connectToDB() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME, $conn;
@@ -16,14 +21,19 @@ function connectToDB() {
 
 $db = connectToDB();
 
-$getNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
-$result = $db->query($getNameQuery);
+$getNameQuery = "SELECT contractorName, contractorID FROM contractor WHERE contractorEmail = ?";
+$stmt = $db->prepare($getNameQuery);
+$stmt->bind_param("s", $userEmail);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result) {
     $row = $result->fetch_assoc();
     $userName = $row['contractorName'];
+    $id = $row['contractorID'];
 } else {
     $userName = "Contractor";
+    $id = -1;
 }
 
 
@@ -36,7 +46,7 @@ $ratingCount = 0;
 
 $getRatingsQuery = "SELECT * FROM rating WHERE contractorID = ?";
 $stmt = $db->prepare($getRatingsQuery);
-$stmt->bind_param("i", $_SESSION['contractorID']);
+$stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -71,15 +81,15 @@ $db->close();
             <button class="dropbtn">...</button>
             <div class="dropdown-content">
 				<a href="ContractorPage.php">Home</a>
-                <a href="#">Messages</a>
+                <a href="ContractorMessageCenter.php">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
-                <a href="#">Job History</a>
+                <a href="ContractorManageJobs.php">Job History</a>
                 <a href="ViewRatings.php">View Ratings</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>
-                <a href="ContractorLogin.php">Log Out</a>
+                <a href="Logout.php">Log Out</a>
             </div>
         </div>
-		<div class="welcome-contractor">Welcome, <?php echo isset($userName) ? $userName : 'Contractor'; ?></div>
+		<div class="welcome-contractor">Welcome, <?php echo isset($userName) ? htmlspecialchars($userName) : 'Contractor'; ?></div>
     </header>
 
     <div class="centered-content">

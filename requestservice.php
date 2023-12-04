@@ -46,6 +46,7 @@
 
         input[type="text"],
         input[type="email"],
+        input[type="file"],
         textarea {
             padding: 10px;
             margin-bottom: 10px;
@@ -72,6 +73,9 @@
 
         button:hover {
             background-color: #555;
+        }
+        a {
+            color: #fff;
         }
     </style>
 </head>
@@ -292,7 +296,7 @@
             <input type="file" id="otherImages" name="otherImages[]" accept="image/*" multiple>
 
             <button type="submit">Submit Request</button>
-			<a href="CustomerPage.php">Return to Dashboard</a>
+			<button><a href="CustomerPage.php">Return to Dashboard</a></button>
         </form>
     </div>
 </body>

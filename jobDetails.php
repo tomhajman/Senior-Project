@@ -47,7 +47,7 @@ if ($result) {
 				<a href="ContractorPage.php">Home</a>
                 <a href="ContractorMessageCenter.php">Messages</a>
                 <a href="AvailableJobs.php">Available Jobs</a>
-                <a href="#">Job History</a>
+                <a href="ContractorManageJobs.php">Job History</a>
                 <a href="ViewRatings.php">View Ratings</a>
                 <a href="ContractorUpdatePage.php">Account Settings</a>
                 <a href="Logout.php">Log Out</a>

@@ -101,17 +101,17 @@
     <div class="dropdown">
         <button class="dropbtn">...</button>
         <div class="dropdown-content">
-			<a href="CustomerPage.php">Home</a>
-			<a href="CustomerMessageCenter.php">Messages</a>
-			<a href="CustomerManageJobs.php">Service History</a>
+            <a href="CustomerPage.php">Home</a>
+            <a href="CustomerMessageCenter.php">Messages</a>
+            <a href="CustomerManageJobs.php">Service History</a>
             <a href="Contractors.php">View Contractors</a>
             <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="Logout.php">Log Out</a>
         </div>
     </div>
     <div class="welcome-user">
-        Welcome, <?php echo $userFName; ?><br>
-        Email: <?php echo $userEmail; ?>
+        Welcome, <?php echo htmlspecialchars($userFName); ?><br>
+        Email: <?php echo htmlspecialchars($userEmail); ?>
     </div>
   </header>
 
@@ -151,7 +151,7 @@
                 $jobID = $row['jobID'];
 
                 echo "<tr>
-                            <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>
+                            <td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Job Cover Image'></td>
                             <td>{$row['jobTitle']}</td>
                             <td>{$row['jobType']}</td>
                             <td>{$row['jobStatus']}</td>

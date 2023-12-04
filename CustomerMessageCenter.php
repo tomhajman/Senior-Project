@@ -50,9 +50,9 @@
     <div class="dropdown">
         <button class="dropbtn">...</button>
         <div class="dropdown-content">
-			<a href="CustomerPage.php">Home</a>
-			<a href="CustomerMessageCenter.php">Messages</a>
-			<a href="CustomerManageJobs.php">Service History</a>
+            <a href="CustomerPage.php">Home</a>
+            <a href="CustomerMessageCenter.php">Messages</a>
+            <a href="CustomerManageJobs.php">Service History</a>
             <a href="Contractors.php">View Contractors</a>
             <a href="CustomerUpdatePage.php">Account Settings</a>
             <a href="Logout.php">Log Out</a>
@@ -116,7 +116,7 @@
                     echo "<td>{$contractorName}</td>
                           <td>{$title}</td>
                           <td>{$status}</td>
-                          <td><a href='customerConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
+                          <td><a href='CustomerConversation.php?id={$row['conversationID']}'><button>Message</button></a></td>";
                     if ($unreadMessagesCount > 0) {
                       echo "<td>New Message(s)</td>";
                     }           

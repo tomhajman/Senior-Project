@@ -209,8 +209,11 @@
 			return $conn;
 		}
 		$db = connectToDB();
-		$getFNameQuery = "SELECT customerFirstName, customerID FROM customer WHERE customerEmail = '$userEmail'";
-		$result = $db->query($getFNameQuery);
+		$getNameQuery = "SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?";
+    $stmt = $db->prepare($getNameQuery);
+    $stmt->bind_param("s", $userEmail);
+    $stmt->execute();
+    $result = $stmt->get_result();
 		if ($result) {
 			$row = $result->fetch_assoc();
 			$userFName = $row['customerFirstName'];
