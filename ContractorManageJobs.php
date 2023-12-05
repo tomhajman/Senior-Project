@@ -17,6 +17,7 @@
 <body>
 	<?php
 		include 'DBCredentials.php';
+		date_default_timezone_set('America/New_York');
 		if(isset($_SESSION['contractorEmail'])){
 			$userEmail = $_SESSION['contractorEmail'];
 		  } else {

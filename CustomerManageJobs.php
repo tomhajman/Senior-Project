@@ -17,6 +17,7 @@
 <body>
   <?php
 		include 'DBCredentials.php';
+		date_default_timezone_set('America/New_York');
 		if(isset($_SESSION['customerEmail'])){
       $userEmail = $_SESSION['customerEmail'];
     } else {
@@ -32,7 +33,8 @@
 				}			
 			return $conn;
 		}
-
+		
+		$completionDate = date("Y-m-d");
 		$conn = connectToDB();
 		$getCustomerInfo = $conn->prepare("SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?");
         $getCustomerInfo->bind_param("s", $userEmail);
@@ -84,7 +86,7 @@
 			
 	if (isset($_POST['markCompleted'])) {
 		$jobIDforStatus = $_POST['jobIDforStatus'];
-		$updateStatus = "UPDATE customerJob SET jobStatus = 'Completed' WHERE jobID = $jobIDforStatus";
+		$updateStatus = "UPDATE customerJob SET jobStatus = 'Completed', completionDate = '$completionDate'  WHERE jobID = $jobIDforStatus";
 		$conn->query($updateStatus);
 	}
 	
