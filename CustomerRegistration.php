@@ -83,11 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>
-<button onclick = "window.location.href = 'CustomerLogin.php';" style="width:auto;">Continue to login</button>
-
 <div id="id01" class="modal">
-  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
   <form class="modal-content" action="" method="post" onsubmit="return validateForm()">
     <div class="container">
       <h1>Sign Up</h1>
@@ -123,12 +119,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <input type="text" placeholder="Enter Email" name="customerEmailAddress" required>
 
       <label for="customerPassword"><b>Password</b></label>
-      <input type="customerPassword" placeholder="Enter Password" name="customerPassword" required>
+      <input type="customerpassword" placeholder="Enter Password" name="customerPassword" required>
       
 
 
       <label for="confirm_password"><b>Confirm Password</b></label>
-      <input type="customerPassword" placeholder="Confirm Password" name="confirm_password" required>
+      <input type="customerpassword" placeholder="Confirm Password" name="confirm_password" required>
 
       <label>
         <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
@@ -137,7 +133,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
 
       <div class="clearfix">
-        <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
         <button type="submit" class="signupbtn">Sign Up</button>
       </div>
       <div id="error-message" class="error"></div>
@@ -146,9 +141,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <script>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  // Make the modal appear by default
+  document.getElementById('id01').style.display='block';
 </script>
 
 </body>
 </html>
-
