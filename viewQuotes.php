@@ -81,8 +81,17 @@
 		//$query = "SELECT contractorName, quotePrice, quoteDate, estimatedCompletionDate FROM jobQuote WHERE jobID = '$id'";
 		//$result = $conn->query($query);
 		
+		
 		if ($result->num_rows > 0) {
 			while ($row = $result->fetch_assoc()) {
+				$getContractorEmail = $conn->prepare("SELECT contractorEmail FROM contractor WHERE contractorName = ?");
+				$getContractorEmail->bind_param("s", $row['contractorName']);
+				$getContractorEmail->execute();
+				
+				$result2 = $getContractorEmail->get_result();
+				$row2 = $result2->fetch_assoc();
+				$contractorEmail = $row2['contractorEmail'];
+				
 				echo '<div class="w3-third contractor-card">';
 				echo '<ul class="w3-ul w3-border w3-hover-shadow w3-theme-l2">';
 				echo '<li class="w3-theme">';
@@ -94,7 +103,12 @@
 				echo '<li><b>Quote Date:</b> '.$row["quoteDate"].'</li>';
 				echo '<li><b>Estimated Completion Date:</b> '.$row["estimatedCompletionDate"].'</li>';
 			    echo '<li class="w3-theme-l5 w3-padding-16">';
-			    echo '<button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> Message</button>';
+			    echo '<form action="#" method="post">';
+				echo '<input type="hidden" name="jobIDforConversation" value="'.$_GET['id'].'">';
+				echo '<input type="hidden" name="contractorEmail" value="'.$contractorEmail.'">';
+				echo '<button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> Message</button>';
+				echo '</form>';
+				//echo $contractorEmail;
 				echo '<a href="customerViewQuote.php?id='.$row["quoteID"].'"><button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> View Quote</button></a>';
 			    echo '</li>';
 			    echo '</ul>';
@@ -102,6 +116,35 @@
 			}
 		} else 
 			echo "No quotes found";
+		
+		if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
+			$jobIDforConversation = $_POST['jobIDforConversation'];
+			
+			$findConversation = $conn->prepare("SELECT * FROM conversations WHERE jobID=? AND customerEmail=? AND contractorEmail=?");
+			$findConversation->bind_param("iss", $jobIDforConversation, $userEmail, $_POST['contractorEmail']);
+			if($findConversation->execute()){
+				$conversation = $findConversation->get_result();
+				$findConversation->close();
+				if($conversation->num_rows > 0){
+					$row = $conversation->fetch_assoc();
+					//echo $_POST['contractorEmail'];
+					echo "<script>window.location='CustomerConversation.php?id={$row['conversationID']}'</script>";
+					exit();
+				} else {
+					$createConversation = $conn->prepare("INSERT INTO conversations (customerEmail, contractorEmail, jobID) VALUES (?, ?, ?)");
+					$createConversation->bind_param("ssi", $userEmail, $_POST['contractorEmail'], $jobIDforConversation);
+					if($createConversation->execute()){
+						$lastInsertedId = mysqli_insert_id($conn);
+						//echo $_POST['contractorEmail'];
+						echo "<script>window.location='CustomerConversation.php?id={$lastInsertedId}'</script>";
+						exit();
+					} else {
+						echo "Something went wrong, try again later";
+						echo $jobIDforConversation;
+					}
+				}
+			}
+		}
 ?>
 
 </div>

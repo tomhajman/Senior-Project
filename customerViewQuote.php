@@ -25,6 +25,7 @@
 	</header>
 <?php
 	include 'DBCredentials.php';
+	date_default_timezone_set('America/New_York');
 	if(isset($_SESSION['customerEmail'])){
 		$userEmail = $_SESSION['customerEmail'];
 	  } else {
@@ -44,6 +45,7 @@
 		
 	if (isset($_GET['id'])) {
 		$conn = connectToDB();
+		$currentDate = date("Y-m-d");
 		$id = $_GET['id'];
 		$getQuoteInfo = "SELECT jobID, contractorName, quotePrice, quoteDate, estimatedCompletionDate, quoteDetails from jobQuote WHERE quoteID = '$id'";
 		$result = $conn->query($getQuoteInfo);
@@ -52,8 +54,8 @@
 		$result2 = $conn->query($getTitle);
 		$record2 = mysqli_fetch_assoc($result2);
 		$contractorName = $record['contractorName'];
-		$getContractorID = "SELECT contractorID FROM contractor WHERE contractorName = ?";
-		$stmt = $conn->prepare($getContractorID);
+		$getContractorInfo = "SELECT contractorID, contractorEmail FROM contractor WHERE contractorName = ?";
+		$stmt = $conn->prepare($getContractorInfo);
 		$stmt->bind_param("s", $contractorName);
 		$stmt->execute();
 		$result3 = $stmt->get_result();
@@ -64,20 +66,54 @@
 		echo "Quote Date: ".$record['quoteDate']."<br>";
 		echo "Estimated Completion Date: ".$record['estimatedCompletionDate']."<br><br>";
 		echo "Additional Details: ".$record['quoteDetails']."<br><br><br>";
+		
+		if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
+		$jobIDforConversation = $_POST['jobIDforConversation'];
+		
+		$findConversation = $conn->prepare("SELECT * FROM conversations WHERE jobID=? AND customerEmail=? AND contractorEmail=?");
+		$findConversation->bind_param("iss", $jobIDforConversation, $userEmail, $record3['contractorEmail']);
+		if($findConversation->execute()){
+			$conversation = $findConversation->get_result();
+			$findConversation->close();
+			if($conversation->num_rows > 0){
+				$row = $conversation->fetch_assoc();
+				header("Location: CustomerConversation.php?id={$row['conversationID']}");
+				exit();
+			} else {
+				$createConversation = $conn->prepare("INSERT INTO conversations (customerEmail, contractorEmail, jobID) VALUES (?, ?, ?)");
+				$createConversation->bind_param("ssi", $userEmail, $record3['contractorEmail'], $jobIDforConversation);
+				if($createConversation->execute()){
+					$lastInsertedId = mysqli_insert_id($conn);
+					header("Location: CustomerConversation.php?id={$lastInsertedId}");
+					exit();
+				} else {
+					echo "Something went wrong, try again later";
+					echo $jobIDforConversation;
+				}
+			}
+		}
 	}
+	}
+	
+	
 ?>
 	<form action="#" method="post">
 		<button id="acceptQuote" name="acceptQuote" type="submit">Accept Quote</button>
 		<button id="rejectQuote" name="rejectQuote" type="submit">Reject Quote</button>
 	</form>
 	<form action="#" method="post">
-		<input type="hidden" name="jobIDforConversation" value=<?php echo "'{$id}'"; ?>>
+		<input type="hidden" name="jobIDforConversation" value=<?php echo "'{$record['jobID']}'"; ?>>
 		<button type="submit" id="info">Message Contractor</button>
 	</form>
 
 <?php		
 		
 	if (isset($_POST['acceptQuote'])) {
+		//Check if estimatedCompletionDate has passed, tell user to message contractor to update quote prior to acceptance.
+		if ($currentDate > $record['estimatedCompletionDate']) {
+			echo "<script>alert('Estimated Completion Date has past. Please contact Contractor and request that they update their quote before accepting.')</script>";
+			exit();
+		}
 		//set jobStatus to In Progress and assign contractorID.
 		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress', contractorID = {$record3['contractorID']} WHERE jobID = {$record['jobID']}";
 		$conn->query($updateStatus);
