@@ -120,7 +120,23 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				//Retrieve cover photo
 				$getCoverPicture = $db->query("SELECT id FROM jobImages WHERE jobID='{$record['jobID']}' AND isCover = 1 ");
 				$getID = $getCoverPicture->fetch_assoc();
-				
+				$urgencyPic = '';
+				switch ($record['jobUrgency']) {
+					case 0:
+						$urgencyPic = 'lowUrgency.png';
+						break;
+					case 1:
+						$urgencyPic = 'mediumUrgency.png';
+						break;
+					case 2:
+						$urgencyPic = 'highUrgency.png';
+						break;
+					case 3:
+						$urgencyPic = 'criticalUrgency.png';
+						break;
+					default: 
+						$urgencyPic = 'lowUrgency.png';
+				}
 				echo '<tr>';
 				echo "<td><img src='assets/loading.png' alt='Loading' class='loading-image' width='160px' height='90px'/>
 					<img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image' style='display: none;' onload='imageLoaded(this)'></td>";
@@ -129,7 +145,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				echo '<td>'.$record['jobCounty'].'</td>';
 				echo '<td>'.$record['jobCity'].'</td>';
 				echo '<td>'.$record['jobAddress'].'</td>';
-				echo '<td>'.$record['jobUrgency'].'</td>';
+				echo "<td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>";
 				echo '<td>'.$record['customerLastName'].'</td>';
 				echo '<td><a href="jobDetails.php?id='.$record['jobID'].'">View Listing</a></td>';
 				echo '<input type="hidden" name="jobID" value="'.$record['jobID'].'">';
@@ -160,7 +176,23 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				//Retrieve cover photo
 				$getCoverPicture = $db->query("SELECT id FROM jobImages WHERE jobID='{$record['jobID']}' AND isCover = 1 ");
 				$getID = $getCoverPicture->fetch_assoc();
-				
+				$urgencyPic = '';
+				switch ($record['jobUrgency']) {
+					case 0:
+						$urgencyPic = 'lowUrgency.png';
+						break;
+					case 1:
+						$urgencyPic = 'mediumUrgency.png';
+						break;
+					case 2:
+						$urgencyPic = 'highUrgency.png';
+						break;
+					case 3:
+						$urgencyPic = 'criticalUrgency.png';
+						break;
+					default: 
+						$urgencyPic = 'lowUrgency.png';
+				}
 				echo '<tr>';
 				echo "<td><img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image'></td>";
 				echo '<td>'.$record['jobType'].'</td>';
@@ -168,7 +200,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				echo '<td>'.$record['jobCounty'].'</td>';
 				echo '<td>'.$record['jobCity'].'</td>';
 				echo '<td>'.$record['jobAddress'].'</td>';
-				echo '<td>'.$record['jobUrgency'].'</td>';
+				echo "<td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>";
 				echo '<td>'.$record['customerLastName'].'</td>';
 				echo '<td><a href="jobDetails.php?id='.$record['jobID'].'">View Listing</a></td>';
 				echo '<input type="hidden" name="jobID" value="'.$record['jobID'].'">';
