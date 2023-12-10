@@ -72,12 +72,12 @@
 
 		<form action="" method="post" enctype="multipart/form-data">
 			<label for="quoteCost">Estimated Cost:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$</label>
-			<input type="number" id="quoteCost" name="quoteCost" min="1">
+			<input type="number" id="quoteCost" name="quoteCost" min="1" required>
 			<br><br>
 			
 			
 			<label for="quoteCompletionDate">Estimated Completion Date:</label>
-			<input type="date" id="quoteCompletionDate" name="quoteCompletionDate"  value="<?php echo date('d-m-Y');?>" min="<?php echo date('d-m-Y');?>">
+			<input type="date" id="quoteCompletionDate" name="quoteCompletionDate"  value="<?php echo date('d-m-Y');?>" min="<?php echo date('d-m-Y');?>" required>
 			
 			<br><br>
 			<label for="quoteDetails">Additional Details:</label>
