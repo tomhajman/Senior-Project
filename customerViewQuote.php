@@ -126,7 +126,7 @@
 		$deleteQuery = "DELETE FROM jobQuote WHERE quoteID = '$id'";
 		$result = $conn->query($deleteQuery);
 		if ($result) {
-		header("Location: viewQuotes.php");
+		header("Location: viewQuotes.php?id={$record['jobID']}");
 		exit();
 		}
 		else 
