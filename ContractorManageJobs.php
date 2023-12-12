@@ -134,9 +134,26 @@
                 $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
                 $getID = $getCoverPicture->fetch_assoc();
                 $jobID = $row['jobID'];
-				$getJobPrice = $conn->query("SELECT quotePrice FROM jobQuote WHERE jobID = {$row['jobID']}");
-				$priceRow = $getJobPrice->fetch_assoc();
-				$jobPrice = $priceRow['quotePrice'];
+                $urgencyPic = '';
+                switch ($row['jobUrgency']) {
+                  case 0:
+                    $urgencyPic = 'lowUrgency.png';
+                    break;
+                  case 1:
+                    $urgencyPic = 'mediumUrgency.png';
+                    break;
+                  case 2:
+                    $urgencyPic = 'highUrgency.png';
+                    break;
+                  case 3:
+                    $urgencyPic = 'criticalUrgency.png';
+                    break;
+                  default: 
+                    $urgencyPic = 'lowUrgency.png';
+                }
+                $getJobPrice = $conn->query("SELECT quotePrice FROM jobQuote WHERE jobID = {$row['jobID']}");
+                $priceRow = $getJobPrice->fetch_assoc();
+                $jobPrice = $priceRow['quotePrice'];
 
                 echo "<tr>
                             <td><img src='assets/loading.png' alt='Loading' class='loading-image' width='160px' height='90px'/>
@@ -147,7 +164,7 @@
                             <td>{$row['jobStatus']}</td>
                             <td>{$row['jobCity']}</td>
                             <td>{$row['jobAddress']}</td>
-                            <td>{$row['jobUrgency']}</td>
+                            <td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>
                             <td>$$jobPrice</td>";
 
                 $status = $row['jobStatus'];
