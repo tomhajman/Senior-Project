@@ -43,7 +43,7 @@ $stmt->fetch();
 if(!(is_null($access_token))){
   echo "<font color = 'red'> Please sign in using Google.</font>";
 } else if (password_verify($inputPassword, $dbPassword)){
-	$_SESSION['customerEmail'] = $inputUsername;
+	$_SESSION['customerEmail'] = strtolower($inputUsername);
 	header('Location: CustomerPage.php');
 	exit;
 } else {

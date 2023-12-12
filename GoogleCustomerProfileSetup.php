@@ -33,7 +33,7 @@ if(isset($_GET['customerEmail'])){
     // Get firstName, lastName and email from $_GET array
     $firstName = (isset($_GET['firstName'])) ? $_GET['firstName'] : "";
     $lastName = (isset($_GET['lastName'])) ? $_GET['lastName'] : "";
-    $email = $_GET['customerEmail'];
+    $email = strtolower($_GET['customerEmail']);
     
 } else {
     // Boot user to CustomerLogin
