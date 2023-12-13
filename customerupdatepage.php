@@ -183,6 +183,11 @@
         $result = $getUserDataQuery->get_result();
         $userData = $result->fetch_assoc();
 
+        // Check if user singed in using google, set token to variable if true
+        if(!is_null($userData['access_token'])){
+            $access_token = $userData['access_token'];
+        }
+
         $getUserDataQuery->close();
         $conn->close();
     } else {
@@ -225,10 +230,10 @@
             echo "<div class='error'>Email or phone number already exists.</div>";
         } else {
             // Validate current password
-            if (password_verify($currentPassword, $userData['customerPassword'])) {
+            if (password_verify($currentPassword, $userData['customerPassword']) || isset($access_token)) {
                 // Current password is correct, proceed with the update
                 // Validate new password and confirm new password
-                if (!empty($newPassword) && $newPassword === $confirmNewPassword) {
+                if ((!empty($newPassword) && $newPassword === $confirmNewPassword) || isset($access_token)) {
                     // Update the user's data in the database
                     $updateUserDataQuery = $conn->prepare("UPDATE customer SET customerFirstName=?, customerLastName=?, customerStreetAddress=?, customerFloorApt=?, customerCity=?, customerZip=?, customerCounty=?, customerEmail=?, customerPhoneNumber=?, customerPassword=? WHERE customerEmail=?");
                     $updateUserDataQuery->bind_param("sssssssssss", $customerFirstName, $customerLastName, $customerStreetAddress, $customerFloorApt, $customerCity, $customerZip, $customerCounty, $customerEmail, $customerPhoneNumber, $hashedNewPassword, $userEmail);
@@ -312,7 +317,7 @@
         </div>
         <div class="input-container">
             <i class="fa fa-phone icon"></i>
-            <input class="input-field" type="text" placeholder="Phone Number" name="customerPhoneNumber" required value="<?php echo $userData['customerPhoneNumber']; ?>">
+            <input class="input-field" type="text" placeholder="Phone Number" name="customerPhoneNumber" value="<?php echo $userData['customerPhoneNumber']; ?>">
         </div>
         <div class="input-container">
             <i class="fa fa-envelope icon"></i>
@@ -320,7 +325,7 @@
         </div>
         <div class="input-container">
             <i class="fa fa-lock icon"></i>
-            <input class="input-field" type="password" placeholder="Current Password" name="currentPassword" required>
+            <input class="input-field" type="password" placeholder="Current Password" name="currentPassword" <?php if(!isset($access_token)) echo "required"; ?>>
         </div>
         <div class="input-container">
             <i class="fa fa-lock icon"></i>
