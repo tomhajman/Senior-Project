@@ -115,7 +115,7 @@
 			exit();
 		}
 		//set jobStatus to In Progress and assign contractorID.
-		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress', contractorID = {$record3['contractorID']} WHERE jobID = {$record['jobID']}";
+		$updateStatus = "UPDATE customerJob SET jobStatus = 'In Progress', contractorID = {$record3['contractorID']}, jobPrice = {$record['quotePrice']} WHERE jobID = {$record['jobID']}";
 		$conn->query($updateStatus);
 		header("Location: CustomerManageJobs.php");
 		exit();

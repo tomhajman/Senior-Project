@@ -119,24 +119,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <input type="text" placeholder="Enter Email" name="customerEmailAddress" required>
 
       <label for="customerPassword"><b>Password</b></label>
-      <input type="customerpassword" placeholder="Enter Password" name="customerPassword" required>
+      <input type="customerPassword" placeholder="Enter Password" name="customerPassword" required>
       
 
 
       <label for="confirm_password"><b>Confirm Password</b></label>
-      <input type="customerpassword" placeholder="Confirm Password" name="confirm_password" required>
-
-      <label>
-        <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
-      </label>
-
-      <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+      <input type="customerPassword" placeholder="Confirm Password" name="confirm_password" required>
 
       <div class="clearfix">
         <button type="submit" class="signupbtn">Sign Up</button>
       </div>
       <div id="error-message" class="error"></div>
     </div>
+	<button onclick = "window.location.href = 'CustomerLogin.php';">Continue to login</button>
   </form>
 </div>
 

@@ -68,11 +68,6 @@ $conn->close();
 	<br><br><a href="CustomerRegistration.php">New user? Create an account here</a><br><br>
 	<a href="GoogleCallback.php"><img src="assets/continue_with_google_light.png"></a><br><br>
   <a href="main.php">Back to Main Menu</a>
-
-  <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn">Cancel</button>
-    <span class="password">Forgot <a href="#">password?</a></span>
-  </div>
 </form>
 </div>
 </body>

@@ -151,21 +151,18 @@
                   default: 
                     $urgencyPic = 'lowUrgency.png';
                 }
-                $getJobPrice = $conn->query("SELECT quotePrice FROM jobQuote WHERE jobID = {$row['jobID']}");
-                $priceRow = $getJobPrice->fetch_assoc();
-                $jobPrice = $priceRow['quotePrice'];
 
                 echo "<tr>
                             <td><img src='assets/loading.png' alt='Loading' class='loading-image' width='160px' height='90px'/>
                             <img src='jobImage.php?id={$getID['id']}' width='160px' height='90px' alt='Database Image' style='display: none;' onload='imageLoaded(this)'></td>
                             <td>{$row['jobTitle']}</td>
-							              <td>{$row['customerLastName']}</td>
+							<td>{$row['customerLastName']}</td>
                             <td>{$row['jobType']}</td>
                             <td>{$row['jobStatus']}</td>
                             <td>{$row['jobCity']}</td>
                             <td>{$row['jobAddress']}</td>
                             <td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>
-                            <td>$$jobPrice</td>";
+                            <td>$ {$row['jobPrice']}</td>";
 
                 $status = $row['jobStatus'];
                 switch ($status) {
@@ -252,8 +249,6 @@
 							$deleteQuote = "DELETE FROM jobQuote WHERE quoteID = $quoteID";
 							$conn->query($deleteQuote);
 							echo '<script>window.location="ContractorManageJobs.php"</script>';
-							//I abhor header function for causing me a massive headache
-							//header("Location: {$_SERVER['PHP_SELF']}");
 							exit();
 						}
 					}
