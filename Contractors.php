@@ -64,7 +64,7 @@
 
       $db = connectToDB();
       $filter = '';
-      
+      //Lets contractors be filtered by expertise.
       if (isset($_POST['filterBtn'])) {
         $filter = $_POST['filterBtn'];
       }

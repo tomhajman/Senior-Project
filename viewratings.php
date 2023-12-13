@@ -1,4 +1,5 @@
 <?php
+//DB connection, session handling.
 session_start();
 
 include 'DBCredentials.php';
@@ -36,7 +37,7 @@ if ($result) {
     $id = -1;
 }
 
-
+//Initialize rating values.
 $overallRating = 0;
 $overallQualityRating = 0;
 $overallCommunicationRating = 0;
@@ -49,7 +50,7 @@ $stmt = $db->prepare($getRatingsQuery);
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
-
+//If there are records in DB, calculates rating.
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $overallRating += ($row['qualityRating'] + $row['communicationRating'] + $row['timelinessRating'] + $row['priceRating']);

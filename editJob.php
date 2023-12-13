@@ -12,6 +12,7 @@
 </head>
 <body>
 	<?php
+		//DB connection, session handling.
 		include 'DBCredentials.php';
 		if(isset($_SESSION['customerEmail'])){
             $userEmail = $_SESSION['customerEmail'];

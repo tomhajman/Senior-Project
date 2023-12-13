@@ -6,7 +6,7 @@
 </head>
 <body>
   	<?php
-		//Connecting DB, passing contractorEmail, can later change this to boot user to login page if they are not signed in. For now will just throw an error.
+		//Connecting DB, session handling.
 		session_start();
 
 include 'DBCredentials.php';
@@ -76,7 +76,7 @@ if ($result) {
 		
 		//Retrieve other photos
 		$getPhotos = $conn->query("SELECT id FROM jobImages WHERE jobID=$id AND isCover != 1");
-		
+		//Output job information.
 		echo '<div class="jobDetails">'.'<h2>'.$record['jobTitle'].'</h1>';
 		echo "<img src='jobImage.php?id={$getID['id']}' width='300px' height='120px' alt='Database Image'><br>";
 		echo "Customer Name: ".$record2['customerFirstName']." ".$record['customerLastName']."<br>";
@@ -98,7 +98,7 @@ if ($result) {
 	
 	$_SESSION['jobTitle'] = $record['jobTitle']; 
 	$_SESSION['quoteJobID'] = $id;
-
+	//Information for conversation.
 	if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
 		$jobIDforConversation = $_POST['jobIDforConversation'];
 		

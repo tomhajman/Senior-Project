@@ -192,6 +192,7 @@
 
 <body>
   <?php
+		//DB connection and session handling.
 		include 'DBCredentials.php';
 		if(isset($_SESSION['customerEmail'])){
       $userEmail = $_SESSION['customerEmail'];
@@ -209,6 +210,7 @@
 			return $conn;
 		}
 		$db = connectToDB();
+		//Displays user's name in the corner.
 		$getNameQuery = "SELECT customerFirstName, customerID FROM customer WHERE customerEmail = ?";
     $stmt = $db->prepare($getNameQuery);
     $stmt->bind_param("s", $userEmail);
@@ -222,7 +224,7 @@
 		} else {
 			$userFName = "User";
 		}
-
+	//Alert for unread messages.
     $getUnreadMessagesCount = $db->prepare("SELECT COUNT(*) AS unreadCount
       FROM messages 
       WHERE conversationID IN (

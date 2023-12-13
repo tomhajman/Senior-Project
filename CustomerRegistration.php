@@ -3,8 +3,24 @@
 ?>
 <!DOCTYPE html>
 <html>
+<head>
   <link rel="stylesheet" href="css/CusReg.css">
-  
+    <!--Style for this wouldn't work in dedicated CSS file-->
+  <style>
+  input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  display: inline-block;
+  border: none;
+  background: #f1f1f1;
+  }
+  input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+  </style>
+  </head>
 <body>
 
 <?php
@@ -119,12 +135,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <input type="text" placeholder="Enter Email" name="customerEmailAddress" required>
 
       <label for="customerPassword"><b>Password</b></label>
-      <input type="customerPassword" placeholder="Enter Password" name="customerPassword" required>
+      <input type="password" placeholder="Enter Password" name="customerPassword" required>
       
 
 
       <label for="confirm_password"><b>Confirm Password</b></label>
-      <input type="customerPassword" placeholder="Confirm Password" name="confirm_password" required>
+      <input type="password" placeholder="Confirm Password" name="confirm_password" required>
 
       <div class="clearfix">
         <button type="submit" class="signupbtn">Sign Up</button>

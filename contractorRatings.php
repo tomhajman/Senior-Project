@@ -1,4 +1,5 @@
 <?php
+//DB connection, session handling
 session_start();
 include 'DBCredentials.php';
 $userEmail = $_SESSION['customerEmail'];

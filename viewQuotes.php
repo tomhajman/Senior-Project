@@ -51,6 +51,7 @@
 <div class="w3-row-padding w3-center w3-padding-16" id="contractorQuotes">
   
 <?php
+//DB connection, session handling
   if(isset($_SESSION['customerEmail'])){
     $userEmail = $_SESSION['customerEmail'];
   } else {
@@ -78,10 +79,8 @@
 			$result = $stmt->get_result();
 			$stmt->close();
 		}
-		//$query = "SELECT contractorName, quotePrice, quoteDate, estimatedCompletionDate FROM jobQuote WHERE jobID = '$id'";
-		//$result = $conn->query($query);
 		
-		
+		//Prints records from DB for each quote for the job.
 		if ($result->num_rows > 0) {
 			while ($row = $result->fetch_assoc()) {
 				$getContractorEmail = $conn->prepare("SELECT contractorEmail FROM contractor WHERE contractorName = ?");
@@ -108,7 +107,6 @@
 				echo '<input type="hidden" name="contractorEmail" value="'.$contractorEmail.'">';
 				echo '<button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> Message</button>';
 				echo '</form>';
-				//echo $contractorEmail;
 				echo '<a href="customerViewQuote.php?id='.$row["quoteID"].'"><button class="w3-button w3-teal w3-padding-small"><i class="fa fa-envelope"></i> View Quote</button></a>';
 			    echo '</li>';
 			    echo '</ul>';
@@ -116,7 +114,7 @@
 			}
 		} else 
 			echo "No quotes found";
-		
+		//Information for conversation.
 		if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
 			$jobIDforConversation = $_POST['jobIDforConversation'];
 			
@@ -127,7 +125,6 @@
 				$findConversation->close();
 				if($conversation->num_rows > 0){
 					$row = $conversation->fetch_assoc();
-					//echo $_POST['contractorEmail'];
 					echo "<script>window.location='CustomerConversation.php?id={$row['conversationID']}'</script>";
 					exit();
 				} else {
@@ -135,7 +132,6 @@
 					$createConversation->bind_param("ssi", $userEmail, $_POST['contractorEmail'], $jobIDforConversation);
 					if($createConversation->execute()){
 						$lastInsertedId = mysqli_insert_id($conn);
-						//echo $_POST['contractorEmail'];
 						echo "<script>window.location='CustomerConversation.php?id={$lastInsertedId}'</script>";
 						exit();
 					} else {

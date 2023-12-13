@@ -1,5 +1,5 @@
 <?php
-// Start the session at the very beginning of the file
+// Start the session at the very beginning of the file, DB connection
 session_start();
 
 include 'DBCredentials.php';
@@ -21,7 +21,7 @@ function connectToDB() {
 }
 
 $db = connectToDB();
-
+//Displays user's name in the corner.
 $getNameQuery = "SELECT contractorName FROM contractor WHERE contractorEmail = '$userEmail'";
 $result = $db->query($getNameQuery);
 
@@ -31,7 +31,7 @@ if ($result) {
 } else {
     $userName = "Contractor";
 }
-
+//Alert for new messages.
 $getUnreadMessagesCount = $db->prepare("SELECT COUNT(*) AS unreadCount
     FROM messages 
     WHERE conversationID IN (

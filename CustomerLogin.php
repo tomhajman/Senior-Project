@@ -24,7 +24,7 @@ function connectToDatabase() {
         
     return $conn;
 }
-
+//Checks if fields are filled, compares to DB.
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['username']) && isset($_POST['password'])) {
 $conn = connectToDatabase();
 $inputUsername = $_POST['username'];

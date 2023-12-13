@@ -16,6 +16,7 @@
 
 <body>
   <?php
+		//DB connection, session handling.
 		include 'DBCredentials.php';
 		date_default_timezone_set('America/New_York');
 		if(isset($_SESSION['customerEmail'])){
@@ -46,7 +47,8 @@
 			$userFName = "User";
 		}
     $getCustomerInfo->close();
-
+	
+	//Information needed for conversations.
     if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
       $jobIDforConversation = $_POST['jobIDforConversation'];
       
@@ -83,7 +85,8 @@
         }
       }
     }
-			
+	
+	//Handles end job and remove job buttons, DB updated accordingly depending on which is pressed.
 	if (isset($_POST['markCompleted'])) {
 		$jobIDforStatus = $_POST['jobIDforStatus'];
 		$updateStatus = "UPDATE customerJob SET jobStatus = 'Completed', completionDate = '$completionDate'  WHERE jobID = $jobIDforStatus";
@@ -121,6 +124,7 @@
   </div>
 
     <?php
+		//This section handles retrieving and listing all jobs in a tabular format. Records output as table data.
         $getJobs = $conn->prepare("SELECT * FROM customerJob WHERE customerID = ?");
         $getJobs->bind_param("i", $customerID);
 
@@ -178,6 +182,7 @@
                             <td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>
                             <td><a href='editJob.php?id={$row['jobID']}'><button>Edit</button></a></td>";
 
+				//Depending on jobStatus, different buttons appear. Pending allows customer to edit, In progress allows them to message contractor and end job. Finished provides link to rating.
                 $status = $row['jobStatus'];
                 switch ($status) {
                     case 'Pending':

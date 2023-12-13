@@ -1,4 +1,5 @@
 <?php
+//DB connection, session handling.
 include 'DBCredentials.php';
 function connectToDatabase() {
     global $HOST_NAME, $USERNAME, $PASSWORD, $DB_NAME;
@@ -13,7 +14,7 @@ function connectToDatabase() {
 }
 
 $conn = connectToDatabase();
-
+//Get image based on ID and type.
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $stmt = $conn->prepare("SELECT mimeType, imageData FROM jobImages WHERE id = ?");
     $stmt->bind_param("i", $_GET['id']);

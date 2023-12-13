@@ -16,6 +16,7 @@
 
 <body>
 	<?php
+		//DB connection and session handling.
 		include 'DBCredentials.php';
 		date_default_timezone_set('America/New_York');
 		if(isset($_SESSION['contractorEmail'])){
@@ -45,7 +46,7 @@
 			$userName = "User";
 		}
     $getContractorInfo->close();
-	
+	//Information for conversation.
 	if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
       $jobIDforConversation = $_POST['jobIDforConversation'];
       
@@ -105,6 +106,7 @@
 	</div>
 	<div class="accepted-jobs">
 	<?php
+		//Gathers all jobs that contractor is bound to in DB. Lists in tabular format.
 		$getJobs = $conn->prepare("SELECT * FROM customerJob WHERE contractorID = ?");
         $getJobs->bind_param("i", $contractorID);
 		
@@ -129,7 +131,7 @@
                         <th>Job Price</th>
 						<th></th>
                       </tr>";
-
+			//Loops through each record and prints them as table data.
             foreach ($rows as $row) {
                 $getCoverPicture = $conn->query("SELECT id FROM jobImages WHERE jobID={$row['jobID']} AND isCover = 1 ");
                 $getID = $getCoverPicture->fetch_assoc();
@@ -164,6 +166,7 @@
                             <td><img src='assets/{$urgencyPic}' alt='Urgency Pic' width='24px' height='24px'></td>
                             <td>$ {$row['jobPrice']}</td>";
 
+				//Depending on status, different options appear. For In progress the contractor can message customer. 
                 $status = $row['jobStatus'];
                 switch ($status) {
                     case 'In Progress':
@@ -198,6 +201,7 @@
 	<div class="pending-quotes">
 	<div class="manage-quote"><h2>Manage Pending Quotes</h2></div>
 	<?php		
+		//Shows pending quotes from DB, allows for editing or deletion.
 		$getQuotes = $conn->prepare("SELECT * FROM jobQuote JOIN customerJob ON jobQuote.jobID = customerJob.jobID WHERE contractorName = ? AND jobStatus = ?");
 		$pendingStatus = "Pending";
 		$getQuotes->bind_param("ss", $userName, $pendingStatus);

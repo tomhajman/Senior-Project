@@ -25,7 +25,7 @@ function connectToDatabase() {
         
     return $conn;
 }
-//I was getting an error where Incorrect Info showed up on page start, so I included isset to avoid this
+//When form is submitted and both fields filled, checks for record in DB.
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['username']) && isset($_POST['password'])) {
 $conn = connectToDatabase();
 $inputUsername = $_POST['username'];
@@ -40,9 +40,6 @@ $stmt->execute();
 $stmt->bind_result($dbPassword);
 $stmt->fetch();
 
-//Can be used instead of direct comparator once hashing is done
-//if (password_verify($inputPassword, $dbPassword)){
-	//echo "Correct info";
 //Compares to DB info, sends to contractor home page if correct, tells user info is incorrect if false.
 if (password_verify($inputPassword, $dbPassword)) {
 	$_SESSION['contractorEmail'] = strtolower($inputUsername);

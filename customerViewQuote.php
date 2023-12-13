@@ -24,6 +24,7 @@
 		<div class="pageInfo">View Quote</div>
 	</header>
 <?php
+	//DB connection and session handling.
 	include 'DBCredentials.php';
 	date_default_timezone_set('America/New_York');
 	if(isset($_SESSION['customerEmail'])){
@@ -45,6 +46,7 @@
 		
 	if (isset($_GET['id'])) {
 		$conn = connectToDB();
+		//Gathers data needed to display quote information.
 		$currentDate = date("Y-m-d");
 		$id = $_GET['id'];
 		$getQuoteInfo = "SELECT jobID, contractorName, quotePrice, quoteDate, estimatedCompletionDate, quoteDetails from jobQuote WHERE quoteID = '$id'";
@@ -66,7 +68,7 @@
 		echo "Quote Date: ".$record['quoteDate']."<br>";
 		echo "Estimated Completion Date: ".$record['estimatedCompletionDate']."<br><br>";
 		echo "Additional Details: ".$record['quoteDetails']."<br><br><br>";
-		
+		//Information for conversation.
 		if(isset($_POST['jobIDforConversation']) && is_numeric($_POST['jobIDforConversation'])){
 		$jobIDforConversation = $_POST['jobIDforConversation'];
 		

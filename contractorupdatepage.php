@@ -14,6 +14,7 @@
 </head>
 <body>
 <?php
+	//DB connection, session handling.
     include 'DBCredentials.php';
     if(isset($_SESSION['contractorEmail'])){
         $userEmail = $_SESSION['contractorEmail'];
@@ -79,6 +80,7 @@
             $getUserDataQuery->close();
 
             if ($userData) {
+				//Validate password before allowing user to change it.
                 if (password_verify($currentPassword, $userData['contractorPassword'])) {
                     if ($newPassword === $confirmNewPassword) {
                         $hashedNewPassword = password_hash($newPassword, PASSWORD_BCRYPT);

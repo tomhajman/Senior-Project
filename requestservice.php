@@ -81,6 +81,7 @@
 </head>
 <body>
 	<?php
+		//DB connection, session handling.
 		include 'DBCredentials.php';
 		if(isset($_SESSION['customerEmail'])){
             $userEmail = $_SESSION['customerEmail'];
@@ -99,7 +100,7 @@
 		}
 		$db = connectToDB();
 		
-		//Functions used to pull values from the database, I don't know if this is the most optimal way of doing it, but this is the way I found that works.
+		//Functions used to pull values from the database. Made early on.
 		function getID() {
 			global $userEmail, $db;
 			$getIDQuery = "SELECT customerID FROM customer WHERE customerEmail = '$userEmail'";

@@ -131,6 +131,7 @@
 </head>
 <body>
     <?php
+	//DB connection and session handling.
     include 'DBCredentials.php';
     if(isset($_SESSION['customerEmail'])){
         $userEmail = $_SESSION['customerEmail'];

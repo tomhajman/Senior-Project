@@ -74,7 +74,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 
   <!-- Rest of the content... -->
   	<?php
-		//Connecting DB, passing contractorEmail, can later change this to boot user to login page if they are not signed in. For now will just throw an error.
+		//Connecting DB, passing contractorEmail.
 		include 'DBCredentials.php';
 		if(isset($_SESSION['contractorEmail'])){
 			$userEmail = $_SESSION['contractorEmail'];
@@ -91,11 +91,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 				}			
 			return $conn;
 		}
-		//Leaving this here if you guys can find something more efficient.
-		/*$db = connectToDB();
-		$getJobInfo = "SELECT jobType, jobTitle, jobDescription, jobPrice, jobCounty, jobCity, jobAddress, customerLastName FROM customerJob";
-		$result = $db->query($getJobInfo);*/
-		
+				
 		//Functions that will be called which will be attatched to the filters in the form, will find and retrieve jobs based on category.
 		//Condensed the several functions down into just allJobs and jobTypeFilter, where instead of manually searching for each jobType, it just reads the variable which has the jobType assigned to it.
 		//Fixed output to be in proper table format.
@@ -103,7 +99,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 			$db = connectToDB();
 			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobStatus = 'Pending'";
 			$result = $db->query($getJobInfo);
-			
+			//Outputs table if records are retrieved.
 			if (mysqli_num_rows($result) > 0) {
 			echo '<table>';
 			echo '<tr>';
@@ -116,10 +112,12 @@ tr:nth-child(even) {background-color: #b4cbed;}
 			echo '<th>Job Urgency</th>';
 			echo '<th>Customer Last Name</th>';
 			echo '</tr>';
+			//Outputs each record as table data.
 			while ($record = mysqli_fetch_assoc($result)) {
 				//Retrieve cover photo
 				$getCoverPicture = $db->query("SELECT id FROM jobImages WHERE jobID='{$record['jobID']}' AND isCover = 1 ");
 				$getID = $getCoverPicture->fetch_assoc();
+				//Dealing with jobUrgency, applying correct photo for each case.
 				$urgencyPic = '';
 				switch ($record['jobUrgency']) {
 					case 0:
@@ -155,6 +153,7 @@ tr:nth-child(even) {background-color: #b4cbed;}
 			echo "NO RECORDS";
 		}
 		
+		//Allows for jobs to be filtered by type.
 		function jobTypeFilter($filter) {
 			$db = connectToDB();
 			$getJobInfo = "SELECT jobID, jobType, jobTitle, jobCounty, jobCity, jobAddress, jobUrgency, customerLastName FROM customerJob WHERE jobType= '$filter' AND jobStatus = 'Pending'";
