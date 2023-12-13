@@ -85,9 +85,9 @@
 			
 			<br><br>
 			<input type="submit" value="Submit Quote">			
-			
+			<button onclick ="window.location.href = 'AvailableJobs.php';" type="button">Return to Job Listings</button>
 		</form>
-			<button onclick ="window.location.href = 'AvailableJobs.php';">Return to Job Listings</button>
+
 		
 			
 	</div>
