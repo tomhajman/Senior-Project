@@ -74,6 +74,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($customerPassword !== $confirmPassword) {
         $errors['customerPassword'] = "Password and Confirm Password must match.";
     }
+	
+	if (strlen($customerPassword) < 8) {
+			$errors['customerPassword'] = "Password must be 8 characters long.";
+		} elseif (!preg_match("/[a-z]/", $customerPassword) || 
+				  !preg_match("/[A-Z]/", $customerPassword) ||
+			      !preg_match("/[0-9]/", $customerPassword)) {
+				$errors['customerPassword'] = "Password must contain a lowercase letter, an uppercase letter, and a number.";
+			}
 
 	if (empty($customerCounty))
 		$errors['customerCounty'] = "customerCounty is empty";
@@ -131,10 +139,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	
 	 <label for="customerPhoneNumber"><b>Phone Number</b></label>
       <input type="text" placeholder="Enter Phone Number" name="customerPhoneNumber" required>
+	  
       <label for="customerEmailAddress"><b>Email</b></label>
+	  <?php if (isset($errors['customerEmailAddress'])): ?>
+            <div style="color: red;"><?php echo $errors['customerEmailAddress']; ?></div>
+      <?php endif; ?>
       <input type="text" placeholder="Enter Email" name="customerEmailAddress" required>
 
       <label for="customerPassword"><b>Password</b></label>
+	  <?php if (isset($errors['customerPassword'])): ?>
+            <div style="color: red;"><?php echo $errors['customerPassword']; ?></div>
+      <?php endif; ?>
       <input type="password" placeholder="Enter Password" name="customerPassword" required>
       
 

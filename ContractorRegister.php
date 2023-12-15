@@ -64,6 +64,14 @@
             if ($password !== $confirmPassword) {
                 $errors['password'] = "Password and Confirm Password must match.";
             }
+			
+		if (strlen($password) < 8) {
+			$errors['password'] = "Password must be 8 characters long.";
+		} elseif (!preg_match("/[a-z]/", $password) || 
+				  !preg_match("/[A-Z]/", $password) ||
+			      !preg_match("/[0-9]/", $password)) {
+				$errors['password'] = "Password must contain a lowercase letter, an uppercase letter, and a number.";
+			}
 
             if (empty($errors)) {
                 $conn = connectToDatabase();
